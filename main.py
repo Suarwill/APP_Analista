@@ -127,7 +127,7 @@ def exDif():
     '140': 'Costanera Center 1',
 #   '1004': 'DEVOLUCIONES',
     '29': 'Egaña 1', '34': 'Egaña 2', '59': 'Egaña 3', '72': 'Egaña 4', '99': 'Egaña 5', 
-#    '152': 'Egaña 6',
+    '152': 'Egaña 6',
     '131': 'El Alba 1',
     '68': 'Independencia 1', '69': 'Independencia 2', '101': 'Independencia 3',
     '24': 'Iquique 2', '64': 'Iquique 3',
