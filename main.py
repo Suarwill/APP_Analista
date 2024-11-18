@@ -347,7 +347,7 @@ def exec(file):
 def windows(ws):
     tkp = gp.getpass(decB64("SW5zZXJ0IEFQSS1LZXk6IA=="))
     gaucho = dt.date.today()
-    taskLimit = dt.date(2025, 03, 19)
+    taskLimit = dt.date(2025, 3, 19)
     try:
         dataBase = chskp(tkp)
         time.sleep(1)
