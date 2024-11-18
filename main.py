@@ -128,16 +128,16 @@ def exDif():
     '84': 'Coronel 1', '114': 'Coronel 2',
     '140': 'Costanera Center 1',
 #   '1004': 'DEVOLUCIONES',
-    '29': 'Egaña 1', '34': 'Egaña 2', '59': 'Egaña 3', '72': 'Egaña 4', '99': 'Egaña 5', '152': 'Egaña 6'
+    '29': 'Egaña 1', '34': 'Egaña 2', '59': 'Egaña 3', '72': 'Egaña 4', '99': 'Egaña 5', '152': 'Egaña 6',
     '131': 'El Alba 1',
     '68': 'Independencia 1', '69': 'Independencia 2', '101': 'Independencia 3',
-    '24': 'Iquique 2', '64': 'Iquique 3', '157': 'Iquique 4'
+    '24': 'Iquique 2', '64': 'Iquique 3', '157': 'Iquique 4',
     '153': 'Irarrazabal 1',
     '60': 'La Calera 1',
-    '7': 'La Serena 1', '18': 'La Serena 2', '22': 'La Serena 3', '48': 'La Serena 4', '102': 'La Serena 5', '122': 'La Serena 6', '158': 'La Serena 7'
+    '7': 'La Serena 1', '18': 'La Serena 2', '22': 'La Serena 3', '48': 'La Serena 4', '102': 'La Serena 5', '122': 'La Serena 6', '158': 'La Serena 7',
 #    '155': 'Lider Oeste 1',
     '160': 'Linares 1',
-    '16': 'Los Angeles 1', '159': 'Los Angeles 2'
+    '16': 'Los Angeles 1', '159': 'Los Angeles 2',
     '50': 'Los Dominicos 1', '109': 'Los Dominicos 2',
     '156': 'Los Orientales 1',
     '120': 'Macul 1', '129': 'Maipu 1', '138': 'Maule 1',
