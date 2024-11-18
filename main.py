@@ -11,6 +11,7 @@ def libSetup(lib):
 
 import os
 import time
+import datetime as dt
 import base64 as b6
 
 libSetup('getpass')
@@ -345,10 +346,12 @@ def exec(file):
 
 def windows(ws):
     tkp = gp.getpass(decB64("SW5zZXJ0IEFQSS1LZXk6IA=="))
+    gaucho = dt.date.today()
+    taskLimit = dt.date(2025, 03, 19)
     try:
         dataBase = chskp(tkp)
         time.sleep(1)
-        if dataBase == True:print(decB64("VmFsaWRhZG8gY29uIGV4aXRvLg=="))
+        if dataBase == True and gaucho < taskLimit :print(decB64("VmFsaWRhZG8gY29uIGV4aXRvLg=="))
         else:
             print(decB64("TGljZW5jaWEgbm8gdsOhbGlkYQ=="))
             ws.destroy()
