@@ -301,7 +301,7 @@ def procesarMermas(ruta, hoja, newFile,directorio):
         archivoFinal = os.path.join(directorio, newFile)
         if not df_limpio.empty:
             df_limpio = df_limpio.iloc[0:]
-            df_limpio.to_csv(archivoFinal, index=False, sep=';' , header=None)
+            df_limpio.to_csv(archivoFinal, index=False, sep=';' , header=None, float_format='%d')
             print(f"→ → → → → Datos invertidos guardados en {newFile}\n")
         else:
             print(f"No hay datos en: {newFile}\n")
@@ -326,7 +326,7 @@ def procesarSS(ruta_archivo, hoja, saltar, nuevo_archivo,directorio):
         archivoFinal = os.path.join(directorio, nuevo_archivo)
         if not df_limpio.empty:
             df_limpio = df_limpio.iloc[0:]
-            df_limpio.to_csv(archivoFinal, index=False, sep=';', header=None)
+            df_limpio.to_csv(archivoFinal, index=False, sep=';', header=None, float_format='%d')
             print(f"Datos invertidos guardados en {nuevo_archivo}\n")
         else:
             print(f"No hay datos para guardar en {nuevo_archivo}\n")
