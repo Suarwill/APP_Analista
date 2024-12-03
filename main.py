@@ -71,8 +71,8 @@ def clsfSS():
     clear()
     dirActual = os.getcwd()
     #carpeta_actual = os.path.dirname(carpeta_inicial)
-    ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "PROCESADO.xlsx"]
-    hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO"]
+    ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO.xlsx"]
+    hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
     eliminar = ss
     print("Este archivo:\nEliminará los anteriores procesados\nProcesará el XLSX en la carpeta\n")
     time.sleep(1)
@@ -135,7 +135,7 @@ def exDif():
     '153': 'Irarrazabal 1',
     '60': 'La Calera 1',
     '7': 'La Serena 1', '18': 'La Serena 2', '22': 'La Serena 3', '48': 'La Serena 4', '102': 'La Serena 5', '122': 'La Serena 6', '158': 'La Serena 7',
-#    '155': 'Lider Oeste 1',
+#   '155': 'Lider Oeste 1',
     '160': 'Linares 1',
     '16': 'Los Angeles 1', '159': 'Los Angeles 2',
     '50': 'Los Dominicos 1', '109': 'Los Dominicos 2',
@@ -280,14 +280,12 @@ def reportDif (sucursal,driver):
     return None
 
 def processM(Xlsxs, hoja , newFile, dir):
-    directorio = dir
     for i in Xlsxs:
-        procesarMermas(i, hoja, newFile, directorio)
+        procesarMermas(i, hoja, newFile, dir)
 
 def processS(Xlsxs, hoja ,saltar, newFile, dir):
-    directorio = dir
     for i in Xlsxs:
-        procesarSS(i, hoja, saltar, newFile, directorio)
+        procesarSS(i, hoja, saltar, newFile, dir)
 
 def procesarMermas(ruta, hoja, newFile,directorio):
     try:
@@ -297,7 +295,9 @@ def procesarMermas(ruta, hoja, newFile,directorio):
                            skiprows = 6, 
                            na_values = [''])
         df = df[[df.columns[1], df.columns[0]]]
-        df_limpio = df.dropna()
+
+        df_limpio = df.dropna(how='all')
+
         archivoFinal = os.path.join(directorio, newFile)
         if not df_limpio.empty:
             df_limpio = df_limpio.iloc[0:]
@@ -319,9 +319,10 @@ def procesarSS(ruta_archivo, hoja, saltar, nuevo_archivo,directorio):
                            usecols = "A:B", 
                            skiprows = saltar, 
                            na_values = [''])
-        
         df = df[[df.columns[1], df.columns[0]]]
-        df_limpio = df.dropna()
+
+        df_limpio = df.dropna(how='all')
+
         archivoFinal = os.path.join(directorio, nuevo_archivo)
         if not df_limpio.empty:
             df_limpio = df_limpio.iloc[0:]
