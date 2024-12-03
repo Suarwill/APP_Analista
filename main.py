@@ -42,12 +42,12 @@ from multiprocessing import Pool
 # Desarrollo de funciones propias
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
 def clear():
-  if os.name == 'nt':  # Si es Windows
+  if os.name == 'nt':        # Si es Windows
     os.system('cls')
-  else:  # Si es Linux/macOS
+  else:                      # Si es Linux/macOS
     os.system('clear')
 
-def clsfMermas():
+def clasificadorMermas():
     # Clasificador de mermas, borra anteriores y extrae nuevas para AAA
     clear()
     dirActual = os.getcwd() #directorio actual
@@ -67,7 +67,7 @@ def clsfMermas():
     print("Proceso finalizado.")
     time.sleep(3)
 
-def clsfSS():
+def clasificadorSS():
     clear()
     dirActual = os.getcwd()
     #carpeta_actual = os.path.dirname(carpeta_inicial)
@@ -90,7 +90,7 @@ def clsfSS():
     print("Proceso finalizado.")
     time.sleep(3)
 
-def exDif():
+def extraerDif():
     clear()
     driver = webdriver.Chrome()
     userw = "a.inventario1"
@@ -174,7 +174,7 @@ def exDif():
     clear()
     return print("Obtención de reportes finalizada.")
 
-def unitZon():
+def unitZones():
     # Unificado de archivos en uno SOLO
     dir = os.getcwd()
     df_final = pd.DataFrame()
@@ -191,8 +191,8 @@ def unitZon():
     clear()    
     return print("Unificacion realizada.")
 
-def renDif():
-    # Renombrar todos los "Inventario" y colocar el nombre de su sucursal
+def renombrarDif():
+    # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
     dir =  os.getcwd()
     columna = 0
     hoja = 'sphinx'
@@ -393,16 +393,16 @@ mensaje = Label(ws, text="Uso bajo Licencia").grid(row=0, column=colcentral)
 separador_3 = Label(ws, text=" ").grid(row=3, column=colcentral)
 
 #Botones
-botonMermas = Button(ws, text="Limpiar archivo de MERMAS - DAÑADOS", command=clsfMermas)
+botonMermas = Button(ws, text="Limpiar archivo de MERMAS - DAÑADOS", command=clasificadorMermas)
 botonMermas.grid(row=posRowLimp, column=posColLimp, sticky="news")
-botonSS = Button(ws, text="Limpiar archivo de SOBRESTOCK", command=clsfSS)
+botonSS = Button(ws, text="Limpiar archivo de SOBRESTOCK", command=clasificadorSS)
 botonSS.grid(row=posRowLimp+space, column=posColLimp,  sticky="news")
-botonExtr = Button(ws, text="Extraer datos para Inventario", command=exDif)
+botonExtr = Button(ws, text="Extraer datos para Inventario", command=extraerDif)
 botonExtr.grid(row=posRowDiferencias, column=posColDiferencias,  sticky="news")
-botonRenDif = Button(ws, text="Renombrar Inventarios", command=renDif)
-botonRenDif.grid(row=posRowDiferencias+space, column=posColDiferencias,  sticky="news")
-botonUnif = Button(ws, text="Unificacion de Datos de Diferencias", command=unitZon)
-botonUnif.grid(row=posRowDiferencias+space+space, column=posColDiferencias,  sticky="news")    
+botonRenameDif = Button(ws, text="Renombrar Inventarios", command=renombrarDif)
+botonRenameDif.grid(row=posRowDiferencias+space, column=posColDiferencias,  sticky="news")
+botonUnificador = Button(ws, text="Unificacion de Datos de Diferencias", command=unitZones)
+botonUnificador.grid(row=posRowDiferencias+space+space, column=posColDiferencias,  sticky="news")    
 
 # Expandir columnas hasta el borde (laterales)
 ws.grid_columnconfigure(0, weight=1)
