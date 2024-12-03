@@ -370,6 +370,9 @@ def chskp(tkp):
     else:
         return False
 
+def closerInv():
+    # Aqui se colocará el código para cerrar los inventariosabiertos del mismo día
+
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
 # Configuración de la ventana principal
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
@@ -395,14 +398,21 @@ separador_3 = Label(ws, text=" ").grid(row=3, column=colcentral)
 #Botones
 botonMermas = Button(ws, text="Limpiar archivo de MERMAS - DAÑADOS", command=clasificadorMermas)
 botonMermas.grid(row=posRowLimp, column=posColLimp, sticky="news")
+
 botonSS = Button(ws, text="Limpiar archivo de SOBRESTOCK", command=clasificadorSS)
 botonSS.grid(row=posRowLimp+space, column=posColLimp,  sticky="news")
+
 botonExtr = Button(ws, text="Extraer datos para Inventario", command=extraerDif)
 botonExtr.grid(row=posRowDiferencias, column=posColDiferencias,  sticky="news")
+
 botonRenameDif = Button(ws, text="Renombrar Inventarios", command=renombrarDif)
 botonRenameDif.grid(row=posRowDiferencias+space, column=posColDiferencias,  sticky="news")
+
 botonUnificador = Button(ws, text="Unificacion de Datos de Diferencias", command=unitZones)
-botonUnificador.grid(row=posRowDiferencias+space+space, column=posColDiferencias,  sticky="news")    
+botonUnificador.grid(row=posRowDiferencias+space*2, column=posColDiferencias,  sticky="news")
+
+botonCierreInv = Button(ws, text="Cerrar Inventarios Abiertos", command=closerInv)
+botonCierreInv.grid(row=posRowDiferencias+space*3, column=posColDiferencias,  sticky="news")
 
 # Expandir columnas hasta el borde (laterales)
 ws.grid_columnconfigure(0, weight=1)
