@@ -108,6 +108,7 @@ def exDif():
     print("Acceso Conseguido")
     time.sleep(2)
 
+    # Sucursales actualizadas al 03/12/2024, último agregado 163
     sucursales = {
 #   '1003': 'AJUSTES',
     '56': 'Alameda 2', 
@@ -118,8 +119,8 @@ def exDif():
     '10': 'Calama 1', '23': 'Calama 3', '66': 'Calama 4', '105': 'Calama 5', '118': 'Calama 6', '119': 'Calama 7',
 #   '100': 'Casa Matriz',
     '40': 'Castro 1', '95': 'Castro 2',
-#   '128': 'Castro 3',
     '30': 'Centro Conce 2',
+    '155': 'Cerrillos 1'
     '146': 'Chicureo 1',
     '83': 'Chillan 1',
     '125': 'Concepcion 1',
@@ -135,7 +136,6 @@ def exDif():
     '153': 'Irarrazabal 1',
     '60': 'La Calera 1',
     '7': 'La Serena 1', '18': 'La Serena 2', '22': 'La Serena 3', '48': 'La Serena 4', '102': 'La Serena 5', '122': 'La Serena 6', '158': 'La Serena 7',
-#   '155': 'Lider Oeste 1',
     '160': 'Linares 1',
     '16': 'Los Angeles 1', '159': 'Los Angeles 2',
     '50': 'Los Dominicos 1', '109': 'Los Dominicos 2',
@@ -148,8 +148,7 @@ def exDif():
     '73': 'Ovalle 1', '126': 'Ovalle 2', '147': 'Ovalle 3',
     '78': 'Parque Arauco 1', '96': 'Parque Arauco 2', '113': 'Parque Arauco 3',
     '51': 'Plaza Sur 1', '134': 'Plaza Sur 2',
-    '4': 'Puerto Montt 1', '25': 'Puerto Montt 2', '35': 'Puerto Montt 3', '43': 'Puerto Montt 4', '44': 'Puerto Montt 5', '45': 'Puerto Montt 6', '49': 'Puerto Montt 7', '52': 'Puerto Montt 8', 
-#   '130': 'Puerto Montt 9',
+    '4': 'Puerto Montt 1', '25': 'Puerto Montt 2', '35': 'Puerto Montt 3', '43': 'Puerto Montt 4', '44': 'Puerto Montt 5', '45': 'Puerto Montt 6', '49': 'Puerto Montt 7', '52': 'Puerto Montt 8',
     '41': 'Puerto Varas 1',
     '13': 'Punta Arenas 1','70': 'Punta Arenas 2','117': 'Punta Arenas 3',
     '154': 'Quilin 1', 
@@ -161,9 +160,8 @@ def exDif():
     '15': 'Tobalaba 1',
     '3': 'Trebol 1','26': 'Trebol 2','54': 'Trebol 3','75': 'Trebol 4','81': 'Trebol 5','98': 'Trebol 6','136': 'Trebol 7',
     '55': 'Valdivia 1','121': 'Valdivia 2','139': 'Valdivia 3',
-    '6': 'Vespucio 1','47': 'Vespucio 2',
+    '6': 'Vespucio 1','47': 'Vespucio 2', '161': 'Vespucio 3','162': 'Vespucio 4',
     '2': 'Viña 1','90': 'Viña 10','88': 'Viña 11','92': 'Viña 12',
-#    '94': 'Viña 14',
     '103': 'Viña 15','104': 'Viña 16','11': 'Viña 2','27': 'Viña 3','32': 'Viña 5', '39': 'Viña 7', '46': 'Viña 8', '86': 'Viña 9',
     '141': 'Ñuñoa 1'
     }
