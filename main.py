@@ -120,7 +120,7 @@ def extraerDif():
 #   '100': 'Casa Matriz',
     '40': 'Castro 1', '95': 'Castro 2',
     '30': 'Centro Conce 2',
-    '155': 'Cerrillos 1'
+    '155': 'Cerrillos 1',
     '146': 'Chicureo 1',
     '83': 'Chillan 1',
     '125': 'Concepcion 1',
@@ -372,6 +372,7 @@ def chskp(tkp):
 
 def closerInv():
     # Aqui se colocará el código para cerrar los inventariosabiertos del mismo día
+    return
 
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
 # Configuración de la ventana principal
