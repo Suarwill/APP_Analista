@@ -420,6 +420,7 @@ ws.grid_columnconfigure(1, weight=1)
 ws.grid_columnconfigure(2, weight=1)
 ws.grid_columnconfigure(3, weight=1)
 ws.grid_columnconfigure(4, weight=1)
+ws.grid_columnconfigure(5, weight=1)
 
 # Bucle
 ws.mainloop()
