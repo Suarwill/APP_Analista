@@ -85,7 +85,7 @@ def clasificadorSS():
     processS(archivos_xlsx, hojas[2] , 7 , ss[2], dirActual)
     print("\n")
     time.sleep(1)
-    renombrar(archivos_xlsx[0], ss[3])
+    renombrar(archivos_xlsx[0], ss[4])
 
     print("Proceso finalizado.")
     time.sleep(3)
