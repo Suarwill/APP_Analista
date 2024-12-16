@@ -33,9 +33,11 @@ import warnings
 libSetup('selenium')
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.common.alert import Alert
 
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
 # Desarrollo de funciones propias
@@ -316,8 +318,54 @@ def chskp(tkp):
         return False
 
 def closerInv():
-    # Aqui se colocará el código para cerrar los inventariosabiertos del mismo día
-    return
+    clear()
+    driver = webdriver.Chrome()
+    userw = "a.inventario1"
+    passw = "ainv2023"
+    web = "https://benny.sphinx.cl/6210.mod" #pagina directa de Inventarios
+
+    driver.get(web)
+    username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "login")))
+    username_field.send_keys(userw)
+    password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "password")))
+    password_field.send_keys(passw)
+
+    login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "btnSubmit")))
+    login_button.click()
+    print("Acceso Conseguido")
+    time.sleep(2)
+
+    with open('sucursales.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+        sucursales = {row[0]: row[1] for row in reader}
+
+    init = '56' # Primera Opcion de sucursal
+    index = list(sucursales.keys()).index(init)
+    for i in range(index, len(sucursales)):
+        pdv = list(sucursales.items())[i]
+        closeInventory(pdv[0],driver)
+    clear()
+    return print("Inventarios del dia cerrados.")
+
+def closeInventory (sucursal,driver):
+    try:
+        select_element  = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
+        select = Select(select_element)
+        select.select_by_value(str(sucursal))
+        time.sleep(2)
+
+        close_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//td[@id='inventarioAbierto']//input[@value='C']")))
+        close_button.click()
+        time.sleep(2)
+        try:
+            alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
+            alert.accept()
+            print("Alert accepted!")
+        except TimeoutException:
+            print("No alert detected.")
+        print(sucursal)
+    except (TimeoutException, NoSuchElementException) as e:
+        print(f"Error al descargar informe {sucursal}: {e}")
 
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
 # Configuración de la ventana principal
