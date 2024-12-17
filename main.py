@@ -48,6 +48,16 @@ def clear():
   else:                      # Si es Linux/macOS
     os.system('clear')
 
+def decB64(tip):
+    return b6.b64decode(tip).decode('utf-8')
+
+def docCSV(documento):
+    with open(documento, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+        listado = {row[0]: row[1] for row in reader}
+    print(decB64("bGlzdGFkbyBkZSBzdWN1cnNhbGVzIG9idGVuaWRv"))
+    return listado
+
 def clasificadorMermas():
     # Clasificador de mermas, borra anteriores y extrae nuevas para AAA
     clear()
@@ -94,24 +104,10 @@ def clasificadorSS():
 def extraerDif():
     clear()
     driver = webdriver.Chrome()
-    userw = "a.inventario1"
-    passw = "ainv2023"
-    web = "https://benny.sphinx.cl/6230.mod" #pagina directa de Inventarios
+    AccesoWEB(driver,"a.inventario1","ainv2023","https://benny.sphinx.cl/6230.mod")
 
-    driver.get(web)
-    username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "login")))
-    username_field.send_keys(userw)
-    password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "password")))
-    password_field.send_keys(passw)
-
-    login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "btnSubmit")))
-    login_button.click()
-    print("Acceso Conseguido")
-    time.sleep(2)
-
-    with open('sucursales.csv', 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=';')
-        sucursales = {row[0]: row[1] for row in reader}
+    # Obtener sucursales
+    sucursales = docCSV('sucursales.csv')
 
     init = '56' # Primera Opcion de sucursal
     index = list(sucursales.keys()).index(init)
@@ -305,9 +301,6 @@ def windows(ws):
         print(f"Error al ejecutar api: {e}")
         ws.destroy()
 
-def decB64(tip):
-    return b6.b64decode(tip).decode('utf-8')
-
 def chskp(tkp):
     bit = hl.md5(tkp.encode('utf-8')).hexdigest()
     base = "a70fce54d500c785426faacfc7a92ba0"
@@ -320,24 +313,10 @@ def chskp(tkp):
 def closerInv():
     clear()
     driver = webdriver.Chrome()
-    userw = "a.inventario1"
-    passw = "ainv2023"
-    web = "https://benny.sphinx.cl/6210.mod" #pagina directa de Inventarios
+    AccesoWEB(driver,"a.inventario1","ainv2023","https://benny.sphinx.cl/6210.mod")
 
-    driver.get(web)
-    username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "login")))
-    username_field.send_keys(userw)
-    password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "password")))
-    password_field.send_keys(passw)
-
-    login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "btnSubmit")))
-    login_button.click()
-    print("Acceso Conseguido")
-    time.sleep(2)
-
-    with open('sucursales.csv', 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=';')
-        sucursales = {row[0]: row[1] for row in reader}
+    # Obtener sucursales
+    sucursales = docCSV('sucursales.csv')
 
     init = '56' # Primera Opcion de sucursal
     index = list(sucursales.keys()).index(init)
@@ -360,12 +339,24 @@ def closeInventory (sucursal,driver):
         try:
             alert = WebDriverWait(driver, 5).until(EC.alert_is_present())
             alert.accept()
-            print("Alert accepted!")
+            print("Aceptado!")
         except TimeoutException:
-            print("No alert detected.")
+            print("No se detecto alerta")
         print(sucursal)
     except (TimeoutException, NoSuchElementException) as e:
-        print(f"Error al descargar informe {sucursal}: {e}")
+        print(f"Error al descargar informe {sucursal}")
+
+def AccesoWEB(driver,userw,passw,web):
+    driver.get(web)
+    username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "login")))
+    username_field.send_keys(userw)
+    password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "password")))
+    password_field.send_keys(passw)
+    login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "btnSubmit")))
+    login_button.click()
+    print(decB64("QWNjZXNvIENvbnNlZ3VpZG8="))
+    time.sleep(2)
+    return
 
 # ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═
 # Configuración de la ventana principal
