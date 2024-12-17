@@ -137,9 +137,7 @@ def unitZones():
 def renombrarDif():
     # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
     dir =  os.getcwd()
-    columna = 0
-    hoja = 'sphinx'
-    sep = '/'
+    columna, hoja, sep = 0,'sphinx', '/'
     xlsxs = buscXlsxDif(dir)
     for x in xlsxs:
         try:
