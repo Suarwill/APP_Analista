@@ -128,7 +128,7 @@ def unitZones():
             df = df.dropna(how='all')          
             if df.empty:
                 df = pd.DataFrame(columns=['Codigo', 'Nombre', 'Marca', 'Stock', 'Cantidad'])
-                df.loc[0] = ['0', '0', '0', '0', '0']
+                df.loc[0] = [0,0,0,0,0]
             
             nombre_archivo = os.path.basename(x).rsplit('.', 1)[0]
             df['Archivo'] = nombre_archivo
