@@ -121,18 +121,24 @@ def unitZones():
     # Unificado de archivos en uno SOLO
     dir = os.getcwd()
     df_final = pd.DataFrame()
-    filesExcel = buscXLSX(dir)
+    filesExcel = buscXLSX(dir) 
     for x in filesExcel:
         try:
-            df = pd.read_excel(os.path.join(dir, x), header=5, usecols='A:E')  # Leer desde la fila 6
-            df = df.dropna(how='all')  # Eliminar filas vacías
-            df['Archivo'] = x  # Agregar columna con el nombre del archivo
+            df = pd.read_excel(os.path.join(dir, x), header=5, usecols='A:E')
+            df = df.dropna(how='all')
+            df['Archivo'] = x
+
+            # Verificar y modificar la celda C7
+            if df.loc[6, 'C'] != df.loc[6, 'C']:
+                df.loc[6, 'C'] = 'x'
+
             df_final = pd.concat([df_final, df], ignore_index=True)
         except Exception as e:
             print(f"Error al procesar el archivo {x}: {e}")
+
     df_final.to_excel("unificados.xlsx", index=False)
-    clear()    
-    return print("Unificacion realizada.")
+    clear()
+    return print("Unificación realizada.")
 
 def renombrarDif():
     # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
