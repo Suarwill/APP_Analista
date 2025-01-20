@@ -125,14 +125,15 @@ def unitZones():
     for x in filesExcel:
         try:
             df = pd.read_excel(os.path.join(dir, x), header=5, usecols='A:E')
-            df = df.dropna(how='all')
-            df['Archivo'] = x
-
-            # Verificar y modificar la celda C7
-            if df.loc[6, 'C'] != df.loc[6, 'C']:
-                df.loc[6, 'C'] = 'x'
-
+            df = df.dropna(how='all')          
+            if df.empty:
+                df = pd.DataFrame(columns=['Codigo', 'Nombre', 'Marca', 'Stock', 'Cantidad'])
+                df.loc[0] = ['0', '0', '0', '0', '0']
+            
+            nombre_archivo = os.path.basename(x).rsplit('.', 1)[0]
+            df['Archivo'] = nombre_archivo
             df_final = pd.concat([df_final, df], ignore_index=True)
+
         except Exception as e:
             print(f"Error al procesar el archivo {x}: {e}")
 
