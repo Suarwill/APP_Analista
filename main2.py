@@ -40,16 +40,18 @@ class VentanaExcel(Ventana):
         super().__init__("Secundaria", 700, 300)
 
         self.crearEtiqueta("Archivo:", 0, 0)
-        self.crearEntradaTexto(0, 1, 30, 1)
+        self.crearBoton("Extraer SobreStocks", Excel.sobrestock(), 1, 1, background="lightblue")
 
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
         super().__init__("Secundaria", 500, 200)
 
         urlDif = "https://benny.sphinx.cl/6230.mod"
+        urlInv = ""
 
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Extraer Diferencias", lambda: self.extraerDiferencias(urlDif), 1, 1, background="lightblue")
+        self.crearBoton("Unificar Archivos", self.unificar, 1, 1, background="lightblue")
         self.crearEtiqueta(" ", 0, 2)
 
     def cerrarINV(url):
@@ -61,7 +63,7 @@ class VentanaSphinx(Ventana):
         web.quit()
         return  print("Inventarios del dia cerrados.")
     
-    def extraerDiferencias(self,urlDif):
+    def extraerDiferencias(urlDif):
         funciones.clear()
         web = paginaWeb(urlDif)
         web.login("login","password","btnSubmit")
@@ -71,6 +73,9 @@ class VentanaSphinx(Ventana):
         Excel.renombrarArchivos()
         web.quit()
         return print("Documentos extraidos")
+
+    def unificar():
+        return Excel.unificar()
 
 class VentanaConfigurar(Ventana):
     def __init__(self, ventana_padre):
@@ -256,13 +261,22 @@ class funciones:
                 writer.writerow(["ID_sucursal,Nombre_sucursal"])
         return print("entorno creado!")
 
+    def carpetaDescargas():
+        chrome_profile_path = os.path.expanduser("~") + "/Library/Application Support/Google/Chrome/Default"
+        prefs_file = os.path.join(chrome_profile_path, "Preferences")
+        with open(prefs_file, 'r') as f:
+            prefs = json.load(f)
+
+        carpeta = prefs.get('download.default_directory', None)
+        return carpeta
+    
 class Excel:
     def __init__():
         pass
 
     def renombrarArchivos():
         # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
-        dir =  os.getcwd()
+        dir =  funciones.carpetaDescargas()
         columna, hoja, sep = 0,'sphinx', '/'
         xlsxs = funciones.buscarArchivos(dir,"Inventario",".xlsx")
         for x in xlsxs:
@@ -289,7 +303,7 @@ class Excel:
 
     def unificar():
         # Unificado de archivos en uno SOLO
-        dir = os.getcwd()
+        dir = funciones.carpetaDescargas()
         df_final = pd.DataFrame()
         archivos = funciones.buscarArchivos(dir,"Inventario",".xlsx") 
         for x in archivos:
@@ -308,6 +322,40 @@ class Excel:
         funciones.clear()
         return print("Unificación realizada.")
 
+    def sobrestock():
+        directorio = funciones.carpetaDescargas()
+        archivos = funciones.buscarArchivos(directorio,"",".xlsx")
+        ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO.xlsx"]
+        funciones.borrarArchivos(directorio, ss)
+        hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
+        for archivo in archivos:
+            for hoja,nuevo_archivo in zip(hojas,ss):
+                if hoja == "SOBRESTOCK - NUEVO": saltar = 6 
+                else: saltar = 7
+                try:
+                    df = pd.read_excel(archivo, 
+                                    sheet_name = hoja, 
+                                    usecols = "A:B", 
+                                    skiprows = saltar, 
+                                    na_values = [''])
+                    df = df[[df.columns[1], df.columns[0]]]
+
+                    df_limpio = df.dropna(how='all')
+
+                    if not df_limpio.empty:
+                        df_limpio = df_limpio.iloc[0:]
+                        df_limpio.to_csv(os.path.join(directorio, nuevo_archivo), index=False, sep=';', header=None, float_format='%d')
+                        print(f"Datos invertidos guardados en {nuevo_archivo}\n")
+                    else:
+                        print(f"No hay datos para guardar en {nuevo_archivo}\n")
+
+                except (FileNotFoundError, PermissionError, ValueError) as e:
+                    print(f"Error al procesar el archivo {archivo}: {e}")
+                except (IndexError) as e:
+                    print(f"Hoja vacia {hoja}")
+        funciones.renombrarArchivos(directorio,"",".xlsx")
+        return print("Proceso finalizado.")
+
 if __name__ == "__main__":
     import importlib as ilib
     import subprocess as sub
@@ -317,7 +365,7 @@ if __name__ == "__main__":
         except ImportError:sub.check_call(['pip', 'install', lib])
         return
 
-    import os, time, csv
+    import os, time, csv, json
     import datetime as dt
     import base64 as b6
     from multiprocessing import Pool
