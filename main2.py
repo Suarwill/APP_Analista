@@ -78,53 +78,41 @@ class VentanaSphinx(Ventana):
         return Excel.unificar()
 
 class VentanaConfigurar(Ventana):
-  def __init__(self, ventana_padre):
-    super().__init__("Configuraciones", 400, 200)
-    load_dotenv(override=True)
+    def __init__(self, ventana_padre):
+        super().__init__("Configuraciones",400, 200)
+        load_dotenv(override=True)
 
-    userLabel = Label(self.ventana, text="Usuario: ")
-    userLabel.grid(row=0, column=1, padx=5, pady=5)
-    userDato = Entry(self.ventana, width=30)
-    userDato.grid(row=0, column=2, padx=5, pady=5)
-    user = funciones.codec(os.getenv("USERNAME"), False)
-    userDato.insert(0, user)
+        userLabel = Label(self.ventana, text="Usuario: ")
+        userLabel.grid(row=0, column=1, padx=5, pady=5)
+        userDato = Entry(self.ventana, width=30)
+        userDato.grid(row=0, column=2, padx=5, pady=5)
+        passLabel = Label(self.ventana, text="Contraseña: ")
+        passLabel.grid(row=1, column=1, padx=5, pady=5)
+        passDato = Entry(self.ventana, width=30)
+        passDato.grid(row=1, column=2, padx=5, pady=5)
 
-    passLabel = Label(self.ventana, text="Contraseña: ")
-    passLabel.grid(row=1, column=1, padx=5, pady=5)
-    passDato = Entry(self.ventana, width=30)
-    passDato.grid(row=1, column=2, padx=5, pady=5)
-    pasw = funciones.codec(os.getenv("PASSWORD"), False)
-    passDato.insert(0, pasw)
+        user = funciones.codec(os.getenv("USERNAME"),False)
+        userDato.insert(0,user)
+        pasw = funciones.codec(os.getenv("PASSWORD"),False)
+        passDato.insert(0,pasw)
 
-    carpetaLabel = Label(self.ventana, text="Carpeta de Descarga: ")
-    carpetaLabel.grid(row=2, column=1, padx=5, pady=5)
-    carpetaDato = Entry(self.ventana, width=30)
-    carpetaDato.grid(row=2, column=2, padx=5, pady=5)
-    carpeta = os.getenv("CARPETA")
-    carpetaDato.insert(0, carpeta)
+        self.crearEtiqueta(" ", 2, 0)
+        self.crearEtiqueta(" ", 0, 0)
+        self.crearBoton("Guardar", lambda : self.guardar(self), 3, 2, background="lightblue")
+        self.crearBoton("Cerrar", self.destroy, 3, 1, background="lightblue")
 
-    self.userDato = userDato  # Store the Entry widget in an instance variable
-    self.passDato = passDato  # Store the Entry widget in an instance variable
-    self.carpetaDato = carpetaDato  # Store the Entry widget in an instance variable
+        self.expandirColumnas(5)
+        self.iniciar()
 
-    self.crearEtiqueta(" ", 2, 0)
-    self.crearEtiqueta(" ", 0, 0)
-    self.crearBoton("Guardar", lambda: self.guardar(self), 3, 2, background="lightblue")  # Pass self to guardar
-    self.crearBoton("Cerrar", self.destroy, 3, 1, background="lightblue")
+    def guardar(self):
+        user =      self.userDato.get("1.0", "end-1c")
+        password =  self.passDato.get("1.0", "end-1c")
 
-    self.expandirColumnas(3)
-
-    self.iniciar()
-
-  def guardar(self):
-    usuario = self.userDato.get("1.0", "end-1c")  # Access user entry data using self
-    paswd = self.passDato.get("1.0", "end-1c")  # Access password entry data using self
-    carpeT = self.carpetaDato.get("1.0", "end-1c")  # Access folder entry data using self
-    if os.path.exists('.env'):
-      set_key(".env", "USERNAME", funciones.codec(usuario))
-      set_key(".env", "PASSWORD", funciones.codec(paswd))
-      set_key(".env", "CARPETA", carpeT)
-    return print("Archivos actualizados con éxito.")
+        if os.path.exists('.env'):
+            set_key(".env", "USERNAME", funciones.codec(user))
+            set_key(".env", "PASSWORD", funciones.codec(password))
+        print("Archivos actualizados con éxito.")
+        return 
 
 class paginaWeb:
     def __init__(self, url):
@@ -260,18 +248,21 @@ class funciones:
                 env_file.write("USERNAME=\n")
                 env_file.write("PASSWORD=\n")
                 env_file.write(f"PERFIL_CHROME={chrome}")
-                env_file.write("CARPETA=\n")
                 env_file.close()
-            print("entorno creado!")
+
+                user = input("Favor ingrese su usuario: ")
+                password = input("Favor ingrese su contraseña: ")
+                set_key(".env", "USERNAME", user)
+                set_key(".env", "PASSWORD", password)
+                
         if not os.path.exists("Sucursales.csv"):
             with open("Sucursales.csv", "w", newline="") as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(["ID_sucursal,Nombre_sucursal"])
-        return print("continue..")
+        return print("entorno creado!")
 
     def carpetaDescargas():
-        load_dotenv(override=True)
-        carpeta = os.getenv("CARPETA")
+        carpeta = os.getcwd()
         return carpeta
     
 class Excel:
@@ -334,10 +325,8 @@ class Excel:
         hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
         for archivo in archivos:
             for hoja,nuevo_archivo in zip(hojas,ss):
-                if hoja == "SOBRESTOCK - NUEVO": 
-                    saltar = 6 
-                else: 
-                    saltar = 7
+                if hoja == "SOBRESTOCK - NUEVO": saltar = 6 
+                else: saltar = 7
                 try:
                     df = pd.read_excel(archivo, 
                                     sheet_name = hoja, 
