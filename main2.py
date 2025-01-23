@@ -44,10 +44,33 @@ class VentanaExcel(Ventana):
 
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Secundaria", 700, 300)
+        super().__init__("Secundaria", 500, 200)
 
-        self.crearEtiqueta("Archivo:", 0, 0)
-        self.crearEntradaTexto(0, 1, 30, 1)
+        urlDif = "https://benny.sphinx.cl/6230.mod"
+
+        self.crearEtiqueta(" ", 0, 0)
+        self.crearBoton("Extraer Diferencias", lambda: self.extraerDiferencias(urlDif), 1, 1, background="lightblue")
+        self.crearEtiqueta(" ", 0, 2)
+
+    def cerrarINV(username, password, url):
+        web = paginaWeb(username, password, url)
+        web.login()
+        listado = funciones.leerCSV("Sucursales.csv")
+        for sucursal in listado:
+            web.cerrarInventario(sucursal)
+        web.quit()
+        return  print("Inventarios del dia cerrados.")
+    
+    def extraerDiferencias(self,urlDif):
+        funciones.clear()
+        web = paginaWeb(urlDif)
+        web.login("login","password","btnSubmit")
+        listado = funciones.leerCSV("Sucursales.csv")
+        for sucursal in listado:
+            web.reporteDiferencias(sucursal)
+        Excel.renombrarArchivos()
+        web.quit()
+        return print("Documentos extraidos")
 
 class VentanaConfigurar(Ventana):
     def __init__(self, ventana_padre):
@@ -63,9 +86,9 @@ class VentanaConfigurar(Ventana):
         passDato = Entry(self.ventana, width=30)
         passDato.grid(row=1, column=2, padx=5, pady=5)
 
-        user = codec(os.getenv("USERNAME"),False)
+        user = funciones.codec(os.getenv("USERNAME"),False)
         userDato.insert(0,user)
-        pasw = codec(os.getenv("PASSWORD"),False)
+        pasw = funciones.codec(os.getenv("PASSWORD"),False)
         passDato.insert(0,pasw)
 
         self.crearEtiqueta(" ", 2, 0)
@@ -81,172 +104,209 @@ class VentanaConfigurar(Ventana):
         password =  self.passDato.get("1.0", "end-1c")
 
         if os.path.exists('.env'):
-            set_key(".env", "USERNAME", codec(user))
-            set_key(".env", "PASSWORD", codec(password))
+            set_key(".env", "USERNAME", funciones.codec(user))
+            set_key(".env", "PASSWORD", funciones.codec(password))
         print("Archivos actualizados con éxito.")
         return 
 
 class paginaWeb:
-  def __init__(self, url):
-    options = Options()
-    load_dotenv(override=True)
-    chrome_profile_path = os.path.expandvars(os.getenv("PERFIL_CHROME"))
-    options.add_argument(f"user-data-dir={chrome_profile_path}")
-    options.add_argument("--disable-notifications")
+    def __init__(self, url):
+        options = Options()
+        load_dotenv(override=True)
+        chrome_profile_path = os.path.expandvars(os.getenv("PERFIL_CHROME"))
+        options.add_argument(f"user-data-dir={chrome_profile_path}")
+        options.add_argument("--disable-notifications")
 
-    self.driver = webdriver.Chrome(options=options)
-    self.username = codec(os.getenv("USERNAME"),False)
-    self.password = codec(os.getenv("PASSWORD"),False)
-    self.url = url
+        self.driver = webdriver.Chrome(options=options)
+        self.username = funciones.codec(os.getenv("USERNAME"),False)
+        self.password = funciones.codec(os.getenv("PASSWORD"),False)
+        self.url = url
 
-  def login(self,NAMEBoxUsuario,IDBoxPassword,IDBotonLogin):
-    self.driver.get(self.url)
-    usuario = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, NAMEBoxUsuario)))
-    usuario.send_keys(self.username)
-    contrasena = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, IDBoxPassword)))
-    contrasena.send_keys(self.password)
-    botonLogin = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, IDBotonLogin)))
-    botonLogin.click()
-    print(decB64("QWNjZXNvIENvbnNlZ3VpZG8="))
-    return time.sleep(2)
+    def login(self,NAMEBoxUsuario,IDBoxPassword,IDBotonLogin):
+        self.driver.get(self.url)
+        usuario = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, NAMEBoxUsuario)))
+        usuario.send_keys(self.username)
+        contrasena = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, IDBoxPassword)))
+        contrasena.send_keys(self.password)
+        botonLogin = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, IDBotonLogin)))
+        botonLogin.click()
+        print(funciones.decB64("QWNjZXNvIENvbnNlZ3VpZG8="))
+        return time.sleep(2)
 
-  def cerrarInventario(self, sucursal):
-    try:
-      select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
-      select = Select(select_element)
-      select.select_by_value(str(sucursal))
-      time.sleep(2)
-
-      botonCerrar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//td[@id='inventarioAbierto']//input[@value='C']")))
-      botonCerrar.click()
-      time.sleep(2)
-      try:
-        alert = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
-        alert.accept()
-        print("Aceptado!")
-      except TimeoutException:
-        print("No se detecto alerta")
-      print(sucursal)
-    except (TimeoutException, NoSuchElementException) as e:
-      print(f"Error al cerrar inventario {sucursal}")
-
-  def reporteDiferencias(self, sucursal):
-    try:
-      select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
-      select = Select(select_element)
-      select.select_by_value(str(sucursal))
-      time.sleep(1)
-
-      select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "inventario_tipo")))
-      select = Select(select_element)
-      select.select_by_value("2") # Productos con Diferencias
-      time.sleep(1)
-
-      botonEjecutar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnEjecuta")))
-      botonEjecutar.click()
-      time.sleep(2)
-
-      botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
-      botonExcel.click()
-      print(sucursal)
-    except (TimeoutException, NoSuchElementException) as e:
-      print(f"Error al descargar informe {sucursal}: {e}")
-    return time.sleep(1)
-  
-  def quit(self):
-    self.driver.quit()
-
-def clear():
-    if os.name == 'nt':   os.system('cls')
-    else:                 os.system('clear')
-    return None
-
-def creacionEntorno():
-    if not os.path.exists(".env"):
-        with open(".env", "w") as env_file:
-            chrome = "%APPDATA%/Google/Chrome"
-            env_file.write("USERNAME=\n")
-            env_file.write("PASSWORD=\n")
-            env_file.write(f"PERFIL_CHROME={chrome}")
-            env_file.close()
-
-            user = input("Favor ingrese su usuario: ")
-            password = input("Favor ingrese su contraseña: ")
-            set_key(".env", "USERNAME", user)
-            set_key(".env", "PASSWORD", password)
-            
-    if not os.path.exists("Sucursales.csv"):
-        with open("Sucursales.csv", "w", newline="") as csv_file:
-            writer = csv.writer(csv_file)
-            writer.writerow(["ID_sucursal,Nombre_sucursal"])
-    return print("entorno creado!")
-
-def decB64(texto):
-    return b6.b64decode(texto).decode('utf-8')
-
-def leerCSV(documento):
-    with open(documento, 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        listado = {row[0]: row[1] for row in reader}
-    print("lista creada")
-    return listado
-
-def buscarArchivos(directorio,nombreInicial,tipoArchivo):
-    listado = os.listdir(directorio)
-    return [os.path.join(dir, archivo) for archivo in listado if archivo.endswith(tipoArchivo) and archivo.startswith(nombreInicial)]
-
-def borrarArchivos(directorio, listaDeArchivos):
-    warnings.filterwarnings("ignore", category=UserWarning)
-    for x in listaDeArchivos:
-        ruta = os.path.join(directorio, x)
+    def cerrarInventario(self, sucursal):
         try:
-            os.remove(ruta)
-            print(f"El archivo {x} ha sido eliminado.")
+            select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
+            select = Select(select_element)
+            select.select_by_value(str(sucursal))
+            time.sleep(2)
+            botonCerrar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//td[@id='inventarioAbierto']//input[@value='C']")))
+            botonCerrar.click()
+            time.sleep(2)
+            try:
+                alert = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
+                alert.accept()
+                print("Aceptado!")
+            except TimeoutException:
+                print("No se detecto alerta")
+                print(sucursal)
+        except (TimeoutException, NoSuchElementException) as e:
+            print(f"Error al cerrar inventario {sucursal}")
+
+    def reporteDiferencias(self, sucursal):
+        try:
+            select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
+            select = Select(select_element)
+            select.select_by_value(str(sucursal))
+            time.sleep(1)
+
+            select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "inventario_tipo")))
+            select = Select(select_element)
+            select.select_by_value("2") # Productos con Diferencias
+            time.sleep(1)
+
+            botonEjecutar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnEjecuta")))
+            botonEjecutar.click()
+            time.sleep(2)
+
+            botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
+            botonExcel.click()
+            print(sucursal)
+        except (TimeoutException, NoSuchElementException) as e:
+            print(f"Error al descargar informe {sucursal}: {e}")
+            return time.sleep(1)
+  
+    def quit(self):
+        self.driver.quit()
+
+class funciones:
+    def __init__(self):
+        pass
+
+    def decB64(texto):
+        return b6.b64decode(texto).decode('utf-8')
+    
+    def codec(w, cif=True):
+        x , i = "" , 1
+        for c in w:
+            y = ord(c)
+            if cif : nV = (y+i)%256
+            else: nV = (y-i)%256
+            i += 1
+            nV = max(0, min(nV, 0x10FFFF))
+            nC = chr(nV)
+            x += nC
+        return x
+    
+    def buscarArchivos(directorio,nombreInicial,tipoArchivo):
+        listado = os.listdir(directorio)
+        return [os.path.join(dir, archivo) for archivo in listado if archivo.endswith(tipoArchivo) and archivo.startswith(nombreInicial)]
+
+    def borrarArchivos(directorio, listaDeArchivos):
+        warnings.filterwarnings("ignore", category=UserWarning)
+        for x in listaDeArchivos:
+            ruta = os.path.join(directorio, x)
+            try:
+                os.remove(ruta)
+                print(f"El archivo {x} ha sido eliminado.")
+            except FileNotFoundError:
+                print(f"No se encontró el archivo {x}.")
+            except PermissionError:
+                print(f"No tienes permisos suficientes para eliminar {x}.")
+            except OSError as error:
+                print(f"Ocurrió un error al eliminar el archivo {x}: {error}")
+        return print("Archivos eliminados.")
+
+    def ejecutarAsincrono(file):
+        try:
+            with Pool(processes=1) as pool:
+                pool.apply_async(sub.run, ["python", file])
+            messagebox.showinfo("Función ejecutada.")
         except FileNotFoundError:
-            print(f"No se encontró el archivo {x}.")
-        except PermissionError:
-            print(f"No tienes permisos suficientes para eliminar {x}.")
-        except OSError as error:
-            print(f"Ocurrió un error al eliminar el archivo {x}: {error}")
-    return print("Archivos eliminados.")
+            messagebox.showerror("Error", "No se encontró el archivo raíz")
 
-def renombrarArchivos(directorio, nuevoNombre):
-    try:
-        nuevaRuta = os.path.join(os.path.dirname(directorio), nuevoNombre)
-        os.rename(directorio, nuevaRuta)
-        print(f"Archivo renombrado a: {nuevaRuta}")
-    except OSError as error:
-        print(f"Error al renombrar el archivo: {error}")
-    return None
+    def leerCSV(documento):
+        with open(documento, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            listado = {row[0]: row[1] for row in reader}
+        print("lista creada")
+        return listado
 
-def ejecutarAsincrono(file):
-    try:
-        with Pool(processes=1) as pool:
-            pool.apply_async(sub.run, ["python", file])
-        messagebox.showinfo("Función ejecutada.")
-    except FileNotFoundError:
-        messagebox.showerror("Error", "No se encontró el archivo raíz")
+    def clear():
+        if os.name == 'nt':   os.system('cls')
+        else:                 os.system('clear')
+        return None
 
-def codec(w, cif=True):
-    x , i = "" , 1
-    for c in w:
-        y = ord(c)
-        if cif : nV = (y+i)%256
-        else: nV = (y-i)%256
-        i += 1
-        nV = max(0, min(nV, 0x10FFFF))
-        nC = chr(nV)
-        x += nC
-    return x
+    def creacionEntorno():
+        if not os.path.exists(".env"):
+            with open(".env", "w") as env_file:
+                chrome = "%APPDATA%/Google/Chrome"
+                env_file.write("USERNAME=\n")
+                env_file.write("PASSWORD=\n")
+                env_file.write(f"PERFIL_CHROME={chrome}")
+                env_file.close()
 
-def cerrarINV(username, password, url, sucursales):
-  web = paginaWeb(username, password, url)
-  web.login()
-  listado = leerCSV(sucursales)
-  for sucursal in listado:
-    web.close_inventory(sucursal)
-  web.quit()
-  print("Inventarios del dia cerrados.")
+                user = input("Favor ingrese su usuario: ")
+                password = input("Favor ingrese su contraseña: ")
+                set_key(".env", "USERNAME", user)
+                set_key(".env", "PASSWORD", password)
+                
+        if not os.path.exists("Sucursales.csv"):
+            with open("Sucursales.csv", "w", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(["ID_sucursal,Nombre_sucursal"])
+        return print("entorno creado!")
+
+class Excel:
+    def __init__():
+        pass
+
+    def renombrarArchivos():
+        # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
+        dir =  os.getcwd()
+        columna, hoja, sep = 0,'sphinx', '/'
+        xlsxs = funciones.buscarArchivos(dir,"Inventario",".xlsx")
+        for x in xlsxs:
+            try:
+                # Leer el archivo Excel sin especificar el encabezado
+                df = pd.read_excel(x, sheet_name=hoja, nrows=5, header=None)
+                # Verificar si la fila 4 existe y tiene un valor en la columna especificada
+                if df.shape[0] >= 4 and not pd.isna(df.iloc[3][columna]):
+                    valor_celda = df.iloc[3][columna]
+                    # Dividir el valor por el separador y tomar la segunda parte
+                    nueva_parte = valor_celda.split(sep)[1].strip()
+                    # Construir el nuevo nombre de archivo
+                    dir, extension = os.path.splitext(x)
+                    nuevo_nombre = nueva_parte + extension
+                    # Renombrar el archivo
+                    os.rename(x, nuevo_nombre)
+                    print(f"Archivo renombrado a: {nuevo_nombre}")
+                else:
+                    print(f"La fila 4 en la hoja '{hoja}' del archivo {x} está vacía o no existe.")
+            except (FileNotFoundError, PermissionError, IndexError, ValueError) as e:
+                print(f"Error al procesar el archivo {x}: {e}")
+        funciones.clear()
+        return print("Renombrado finalizado.") 
+
+    def unificar():
+        # Unificado de archivos en uno SOLO
+        dir = os.getcwd()
+        df_final = pd.DataFrame()
+        archivos = funciones.buscarArchivos(dir,"Inventario",".xlsx") 
+        for x in archivos:
+            try:
+                df = pd.read_excel(os.path.join(dir, x), header=5, usecols='A:E')
+                df = df.dropna(how='all')          
+                if df.empty:
+                    df = pd.DataFrame(columns=['Codigo', 'Nombre', 'Marca', 'Stock', 'Cantidad'])
+                    df.loc[0] = [0,0,0,0,0]
+                nombre_archivo = os.path.basename(x).rsplit('.', 1)[0]
+                df['Archivo'] = nombre_archivo
+                df_final = pd.concat([df_final, df], ignore_index=True)
+            except Exception as e:
+                print(f"Error al procesar el archivo {x}: {e}")
+        df_final.to_excel("unificados.xlsx", index=False)
+        funciones.clear()
+        return print("Unificación realizada.")
 
 if __name__ == "__main__":
     import importlib as ilib
@@ -283,5 +343,5 @@ if __name__ == "__main__":
     from selenium.webdriver.common.alert import Alert
 
     ventanaPrincipal = VentanaPrincipal()
-    creacionEntorno()
+    funciones.creacionEntorno()
     ventanaPrincipal.iniciar()
