@@ -52,9 +52,9 @@ class VentanaSphinx(Ventana):
         self.crearBoton("Extraer Diferencias", lambda: self.extraerDiferencias(urlDif), 1, 1, background="lightblue")
         self.crearEtiqueta(" ", 0, 2)
 
-    def cerrarINV(username, password, url):
-        web = paginaWeb(username, password, url)
-        web.login()
+    def cerrarINV(url):
+        web = paginaWeb(url)
+        web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
         for sucursal in listado:
             web.cerrarInventario(sucursal)
