@@ -18,9 +18,6 @@ class Ventana:
         for x in range(num_columnas):
             self.ventana.grid_columnconfigure(x, weight=1)
 
-    def insertarDato(self, elemento, atributo, valor):
-        getattr(elemento, atributo)(0, valor)
-
     def destroy(self):
         self.ventana.destroy()
 
@@ -29,15 +26,23 @@ class Ventana:
 
 class VentanaPrincipal(Ventana):
     def __init__(self):
-        super().__init__("Principal", 500, 400)
-
+        super().__init__("Principal", 300, 200)
         self.crearEtiqueta(" ", 0, 0)
-        self.crearBoton("Archivos Excel", lambda: VentanaSecundaria(self.ventana), 1, 1, background="lightblue")
-        self.crearBoton("Sphinx", lambda: VentanaSecundaria(self.ventana), 1, 3, background="lightblue")
-        self.crearBoton("Configuración", lambda: VentanaConfigurar(self.ventana), 3, 3, background="lightblue")
-        self.expandirColumnas(5)
+        self.crearBoton("Archivos Excel", lambda: VentanaExcel(self.ventana), 1, 1, background="lightblue")
+        self.crearBoton("Sphinx", lambda: VentanaSphinx(self.ventana), 2, 1, background="lightblue")
+        self.crearEtiqueta(" ", 3, 2)
+        self.crearBoton("Configuración", lambda: VentanaConfigurar(self.ventana), 4, 1, background="lightblue")
+        self.crearEtiqueta(" ", 0, 2)
+        self.expandirColumnas(3)
 
-class VentanaSecundaria(Ventana):
+class VentanaExcel(Ventana):
+    def __init__(self, ventana_padre):
+        super().__init__("Secundaria", 700, 300)
+
+        self.crearEtiqueta("Archivo:", 0, 0)
+        self.crearEntradaTexto(0, 1, 30, 1)
+
+class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
         super().__init__("Secundaria", 700, 300)
 
@@ -53,7 +58,6 @@ class VentanaConfigurar(Ventana):
         userLabel.grid(row=0, column=1, padx=5, pady=5)
         userDato = Entry(self.ventana, width=30)
         userDato.grid(row=0, column=2, padx=5, pady=5)
-
         passLabel = Label(self.ventana, text="Contraseña: ")
         passLabel.grid(row=1, column=1, padx=5, pady=5)
         passDato = Entry(self.ventana, width=30)
@@ -66,8 +70,8 @@ class VentanaConfigurar(Ventana):
 
         self.crearEtiqueta(" ", 2, 0)
         self.crearEtiqueta(" ", 0, 0)
-        self.crearBoton("Guardar", lambda : self.guardar(self), 3, 1, background="lightblue")
-        self.crearBoton("Cerrar", self.destroy, 3, 2, background="lightblue")
+        self.crearBoton("Guardar", lambda : self.guardar(self), 3, 2, background="lightblue")
+        self.crearBoton("Cerrar", self.destroy, 3, 1, background="lightblue")
 
         self.expandirColumnas(5)
         self.iniciar()
