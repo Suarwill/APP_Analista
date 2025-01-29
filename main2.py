@@ -12,8 +12,10 @@ class Ventana:
         Label(self.ventana, text=texto, **kwargs).grid(row=fila, column=columna, padx=5, pady=5)
 
     def crearEntradaTexto(self, fila, columna, width, height, **kwargs):
-        Text(self.ventana, width=width, height=height, **kwargs).grid(row=fila, column=columna, padx=5, pady=5)
-
+        text_widget = Text(self.ventana, width=width, height=height, **kwargs)
+        text_widget.grid(row=fila, column=columna, padx=5, pady=5)
+        return text_widget
+    
     def expandirColumnas(self, num_columnas):
         for x in range(num_columnas):
             self.ventana.grid_columnconfigure(x, weight=1)
@@ -26,33 +28,46 @@ class Ventana:
 
 class VentanaPrincipal(Ventana):
     def __init__(self):
-        super().__init__("Principal", 300, 200)
+        super().__init__("Principal", 300, 400)
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Archivos Excel", lambda: VentanaExcel(self.ventana), 1, 1, background="lightblue")
-        self.crearBoton("Sphinx", lambda: VentanaSphinx(self.ventana), 2, 1, background="lightblue")
+        self.crearBoton("Funciones en Sphinx", lambda: VentanaSphinx(self.ventana), 2, 1, background="lightblue")
         self.crearEtiqueta(" ", 3, 2)
         self.crearBoton("Configuración", lambda: VentanaConfigurar(self.ventana), 4, 1, background="lightblue")
-        self.crearEtiqueta(" ", 0, 2)
+        self.crearEtiqueta(" ", 5, 2)
+        self.crearBoton("Cerrar", self.destroy, 6, 1, background="lightblue")
+        self.crearEtiqueta(" ", 7, 2)
         self.expandirColumnas(3)
 
 class VentanaExcel(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Secundaria", 700, 300)
+        super().__init__("Funciones en Excel",200,400)
 
-        self.crearEtiqueta("Archivo:", 0, 0)
-        self.crearBoton("Extraer SobreStocks", lambda : Excel.sobrestock(), 1, 1, background="lightblue")
+        self.crearEtiqueta(" ", 0, 0)
+        self.crearBoton("Extraer Mermas", lambda : Excel.mermas(), 1, 1, background="lightblue")
+        self.crearBoton("Extraer SobreStocks", lambda : Excel.sobrestock(), 2, 1, background="lightblue")
+        self.crearEtiqueta(" ", 3, 2)
+        self.crearBoton("Cerrar", self.destroy, 4, 1, background="lightblue")
+
+        self.expandirColumnas(3)
+        self.iniciar()
 
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Secundaria", 500, 200)
+        super().__init__("Secundaria", 300, 500)
 
         urlDif = "https://benny.sphinx.cl/6230.mod"
-        urlInv = ""
+        urlInv = "https://benny.sphinx.cl/6210.mod"
 
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Extraer Diferencias", lambda: self.extraerDiferencias(urlDif), 1, 1, background="lightblue")
-        self.crearBoton("Unificar Archivos", self.unificar, 1, 1, background="lightblue")
-        self.crearEtiqueta(" ", 0, 2)
+        self.crearBoton("Unificar Archivos", lambda : Excel.unificar(), 2, 1, background="lightblue")
+        self.crearEtiqueta(" ", 3, 2)
+        self.crearBoton("Cerrar Inventarios", lambda : self.cerrarINV(urlInv), 4, 1, background="lightblue")
+        self.crearEtiqueta(" ", 5, 2)
+        self.crearBoton("Cerrar", self.destroy, 5, 1, background="lightblue")
+        self.expandirColumnas(3)
+        self.iniciar()
 
     def cerrarINV(url):
         web = paginaWeb(url)
@@ -74,45 +89,48 @@ class VentanaSphinx(Ventana):
         web.quit()
         return print("Documentos extraidos")
 
-    def unificar():
-        return Excel.unificar()
-
 class VentanaConfigurar(Ventana):
     def __init__(self, ventana_padre):
         super().__init__("Configuraciones",400, 200)
         load_dotenv(override=True)
 
-        userLabel = Label(self.ventana, text="Usuario: ")
-        userLabel.grid(row=0, column=1, padx=5, pady=5)
-        userDato = Entry(self.ventana, width=30)
-        userDato.grid(row=0, column=2, padx=5, pady=5)
-        passLabel = Label(self.ventana, text="Contraseña: ")
-        passLabel.grid(row=1, column=1, padx=5, pady=5)
-        passDato = Entry(self.ventana, width=30)
-        passDato.grid(row=1, column=2, padx=5, pady=5)
-
-        user = funciones.codec(os.getenv("USERNAME"),False)
-        userDato.insert(0,user)
-        pasw = funciones.codec(os.getenv("PASSWORD"),False)
-        passDato.insert(0,pasw)
-
-        self.crearEtiqueta(" ", 2, 0)
         self.crearEtiqueta(" ", 0, 0)
-        self.crearBoton("Guardar", lambda : self.guardar(self), 3, 2, background="lightblue")
+        self.crearEtiqueta("Usuario: ", 0, 1)
+        self.crearEtiqueta("Contraseña: ", 1, 1)
+        self.crearEtiqueta("Carpeta de descargas: ", 1, 1)
+
+        self.userDato =     self.crearEntradaTexto(0, 2, 30, 1)
+        self.passDato =     self.crearEntradaTexto(1, 2, 30, 1)
+        self.carpeta =      self.crearEntradaTexto(2, 2, 30, 1)
+
+        user = funciones.codec(os.getenv("USERNAME"), False)
+        self.userDato.insert(tk.END, user)
+        pasw = funciones.codec(os.getenv("PASSWORD"), False)
+        self.passDato.insert(tk.END, pasw)
+        carpeta = os.getenv("CARPETA")
+        self.carpeta.insert(tk.END, carpeta)
+
+        self.crearBoton("Guardar", self.guardar, 3, 2, background="lightblue")
         self.crearBoton("Cerrar", self.destroy, 3, 1, background="lightblue")
 
-        self.expandirColumnas(5)
+        self.crearEtiqueta(" ", 0, 3)
+        self.expandirColumnas(4)
         self.iniciar()
 
     def guardar(self):
-        user =      self.userDato.get("1.0", "end-1c")
-        password =  self.passDato.get("1.0", "end-1c")
+        user = self.userDato.get("1.0", tk.END).strip()
+        clave = self.passDato.get("1.0", tk.END).strip()
+        carpeta = self.carpeta.get("1.0", tk.END).strip()
 
         if os.path.exists('.env'):
             set_key(".env", "USERNAME", funciones.codec(user))
-            set_key(".env", "PASSWORD", funciones.codec(password))
-        print("Archivos actualizados con éxito.")
-        return 
+            set_key(".env", "PASSWORD", funciones.codec(clave))
+            set_key(".env", "CARPETA", carpeta)
+            print("Archivos actualizados con éxito.")
+            self.destroy()
+        else:
+            print("No se encontró el archivo .env")
+        return
 
 class paginaWeb:
     def __init__(self, url):
@@ -146,7 +164,7 @@ class paginaWeb:
             time.sleep(2)
             botonCerrar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//td[@id='inventarioAbierto']//input[@value='C']")))
             botonCerrar.click()
-            time.sleep(2)
+            time.sleep(1)
             try:
                 alert = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
                 alert.accept()
@@ -193,14 +211,18 @@ class funciones:
     
     def codec(w, cif=True):
         x , i = "" , 1
-        for c in w:
-            y = ord(c)
-            if cif : nV = (y+i)%256
-            else: nV = (y-i)%256
-            i += 1
-            nV = max(0, min(nV, 0x10FFFF))
-            nC = chr(nV)
-            x += nC
+        valido = funciones.validador()
+        if valido == True:
+            for c in w:
+                y = ord(c)
+                if cif : nV = (y+i)%256
+                else: nV = (y-i)%256
+                i += 1
+                nV = max(0, min(nV, 0x10FFFF))
+                nC = chr(nV)
+                x += nC
+        else:
+            print ("No es posible continuar con el proceso.")
         return x
     
     def buscarArchivos(directorio,nombreInicial,tipoArchivo):
@@ -246,21 +268,18 @@ class funciones:
         if not os.path.exists(".env"):
             with open(".env", "w") as env_file:
                 chrome = "%APPDATA%/Google/Chrome"
-
                 env_file.write("USERNAME=\n")
                 env_file.write("PASSWORD=\n")
                 env_file.write("CARPETA=\n")
                 env_file.write(f"PERFIL_CHROME={chrome}")
                 env_file.close()
             return print("Archivo env. creado!")
-                
         if not os.path.exists("Sucursales.csv"):
             with open("Sucursales.csv", "w", newline="") as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(["ID_sucursal,Nombre_sucursal"])
                 csv_file.close()
             return print("Sucursales.csv creado!")
-
         return ("Continuando...")
 
     def carpetaDescargas():
@@ -269,6 +288,24 @@ class funciones:
         print(carpeta)
         return carpeta
     
+    def validador():
+        url = "https://suarwill.github.io"
+        try:
+            respuesta = rq.get(url)
+            respuesta.raise_for_status()
+            soup = bs(respuesta.text, "html.parser")
+            elemento = soup.find('p', id="empresa-B01")
+            valido, api = elemento.text.strip(), "2025"
+            if valido == api:
+                return True
+            else:
+                print("Actualizar librería")
+                return False
+        except rq.exceptions.HTTPError:
+            return print("Error HTTP al acceder a la URL")
+        except rq.exceptions.RequestException:
+            return print("Error al acceder a la URL")
+
 class Excel:
     def __init__():
         pass
@@ -410,25 +447,26 @@ if __name__ == "__main__":
     import base64 as b6
     from multiprocessing import Pool
     libSetup('tkinter')
-    from tkinter import *
+    import tkinter as tk
+    from tkinter import Tk, Button, Label, Text
     from tkinter import messagebox
     libSetup('warnings')
     import warnings
-    libSetup('getpass')
-    import getpass as gp
     libSetup('pandas')
     import pandas as pd
     libSetup('python-dotenv')
     from dotenv import load_dotenv, set_key
+    libSetup('requests')
+    import requests as rq
+    libSetup('bs4')
+    from bs4 import BeautifulSoup as bs
     libSetup('selenium')
     from selenium import webdriver
     from selenium.webdriver.common.by import By
-    from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait, Select
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.common.exceptions import TimeoutException, NoSuchElementException
-    from selenium.webdriver.common.alert import Alert
 
     ventanaPrincipal = VentanaPrincipal()
     funciones.creacionEntorno()
