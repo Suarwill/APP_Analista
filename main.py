@@ -73,7 +73,7 @@ class VentanaSphinx(Ventana):
         web = paginaWeb(self.urlInv)
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
-        for sucursal in listado:
+        for sucursal in listado[0]:
             web.cerrarInventario(sucursal)
         web.quit()
         return  print("Inventarios del dia cerrados.")
@@ -83,7 +83,7 @@ class VentanaSphinx(Ventana):
         web = paginaWeb(self.urlDif)
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
-        for sucursal in listado:
+        for sucursal in listado[0]:
             web.reporteDiferencias(sucursal)
         Excel.renombrarArchivos()
         web.quit()
