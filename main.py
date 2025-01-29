@@ -257,7 +257,7 @@ class funciones:
 
     def leerCSV(documento):
         with open(documento, 'r') as csvfile:
-            reader = csv.reader(csvfile)
+            reader = csv.reader(csvfile, delimiter=',')
             listado = {row[0]: row[1] for row in reader}
         print("lista creada")
         return listado
