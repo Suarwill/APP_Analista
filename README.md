@@ -12,5 +12,8 @@ Esta aplicación está diseñada para automatizar tareas repetitivas y tediosas 
 **Tecnologías:**
 * Python
 
+**Crear ejecutable de 1 archivo:**
+* Usar el comando: pyinstaller --onefile main.py
+
 **Creado por:**
 William Suarez
