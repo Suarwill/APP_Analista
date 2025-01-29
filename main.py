@@ -44,8 +44,8 @@ class VentanaExcel(Ventana):
         super().__init__("Funciones en Excel",200,400)
 
         self.crearEtiqueta(" ", 0, 0)
-        self.crearBoton("Extraer Mermas", lambda : Excel.mermas(), 1, 1, background="lightblue")
-        self.crearBoton("Extraer SobreStocks", lambda : Excel.sobrestock(), 2, 1, background="lightblue")
+        self.crearBoton("Extraer Mermas", Excel.mermas, 1, 1, background="lightblue")
+        self.crearBoton("Extraer SobreStocks", Excel.sobrestock, 2, 1, background="lightblue")
         self.crearEtiqueta(" ", 3, 2)
         self.crearBoton("Cerrar", self.destroy, 4, 1, background="lightblue")
 
@@ -56,21 +56,21 @@ class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
         super().__init__("Secundaria", 300, 500)
 
-        urlDif = "https://benny.sphinx.cl/6230.mod"
-        urlInv = "https://benny.sphinx.cl/6210.mod"
+        self.urlDif = "https://benny.sphinx.cl/6230.mod"
+        self.urlInv = "https://benny.sphinx.cl/6210.mod"
 
         self.crearEtiqueta(" ", 0, 0)
-        self.crearBoton("Extraer Diferencias", lambda: self.extraerDiferencias(urlDif), 1, 1, background="lightblue")
-        self.crearBoton("Unificar Archivos", lambda : Excel.unificar(), 2, 1, background="lightblue")
+        self.crearBoton("Extraer Diferencias", self.extraerDiferencias, 1, 1, background="lightblue")
+        self.crearBoton("Unificar Archivos", Excel.unificar, 2, 1, background="lightblue")
         self.crearEtiqueta(" ", 3, 2)
-        self.crearBoton("Cerrar Inventarios", lambda : self.cerrarINV(urlInv), 4, 1, background="lightblue")
+        self.crearBoton("Cerrar Inventarios", self.cerrarINV, 4, 1, background="lightblue")
         self.crearEtiqueta(" ", 5, 2)
         self.crearBoton("Cerrar", self.destroy, 5, 1, background="lightblue")
         self.expandirColumnas(3)
         self.iniciar()
 
-    def cerrarINV(url):
-        web = paginaWeb(url)
+    def cerrarINV(self):
+        web = paginaWeb(self.urlInv)
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
         for sucursal in listado:
@@ -78,9 +78,9 @@ class VentanaSphinx(Ventana):
         web.quit()
         return  print("Inventarios del dia cerrados.")
     
-    def extraerDiferencias(urlDif):
+    def extraerDiferencias(self):
         funciones.clear()
-        web = paginaWeb(urlDif)
+        web = paginaWeb(self.urlDif)
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
         for sucursal in listado:
@@ -285,7 +285,6 @@ class funciones:
     def carpetaDescargas():
         load_dotenv(override=True)
         carpeta = os.environ.get("CARPETA")
-        print(carpeta)
         return carpeta
     
     def validador():
