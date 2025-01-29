@@ -85,7 +85,6 @@ class VentanaSphinx(Ventana):
         listado = funciones.leerCSV("Sucursales.csv")
         for sucursal,pdv in listado.items():
             web.reporteDiferencias(sucursal,pdv)
-        Excel.renombrarArchivos()
         web.quit()
         return print("Documentos extraidos")
 
@@ -257,9 +256,9 @@ class funciones:
 
     def leerCSV(documento):
         directorio = os.getcwd()
+        listado = {}
         try:
-            listado = {}
-            with open(os.path.join(directorio,documento), 'r',encoding= 'utf-8') as csvfile:
+            with open(os.path.join(directorio,documento), 'r', encoding= 'utf-8', delimeter=',') as csvfile:
                 reader = csv.reader(csvfile)
                 listado = {row[0]: row[1] for row in reader}
         except:
