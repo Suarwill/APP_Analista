@@ -40,7 +40,7 @@ class VentanaExcel(Ventana):
         super().__init__("Secundaria", 700, 300)
 
         self.crearEtiqueta("Archivo:", 0, 0)
-        self.crearBoton("Extraer SobreStocks", Excel.sobrestock(), 1, 1, background="lightblue")
+        self.crearBoton("Extraer SobreStocks", lambda : Excel.sobrestock(), 1, 1, background="lightblue")
 
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
@@ -175,6 +175,7 @@ class paginaWeb:
 
             botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
             botonExcel.click()
+            Excel.renombrarArchivos()
             print(sucursal)
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error al descargar informe {sucursal}: {e}")
@@ -245,24 +246,27 @@ class funciones:
         if not os.path.exists(".env"):
             with open(".env", "w") as env_file:
                 chrome = "%APPDATA%/Google/Chrome"
+
                 env_file.write("USERNAME=\n")
                 env_file.write("PASSWORD=\n")
+                env_file.write("CARPETA=\n")
                 env_file.write(f"PERFIL_CHROME={chrome}")
                 env_file.close()
-
-                user = input("Favor ingrese su usuario: ")
-                password = input("Favor ingrese su contraseña: ")
-                set_key(".env", "USERNAME", user)
-                set_key(".env", "PASSWORD", password)
+            return print("Archivo env. creado!")
                 
         if not os.path.exists("Sucursales.csv"):
             with open("Sucursales.csv", "w", newline="") as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(["ID_sucursal,Nombre_sucursal"])
-        return print("entorno creado!")
+                csv_file.close()
+            return print("Sucursales.csv creado!")
+
+        return ("Continuando...")
 
     def carpetaDescargas():
-        carpeta = os.getcwd()
+        load_dotenv(override=True)
+        carpeta = os.environ.get("CARPETA")
+        print(carpeta)
         return carpeta
     
 class Excel:
@@ -320,7 +324,7 @@ class Excel:
     def sobrestock():
         directorio = funciones.carpetaDescargas()
         archivos = funciones.buscarArchivos(directorio,"",".xlsx")
-        ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO.xlsx"]
+        ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO SS.xlsx"]
         funciones.borrarArchivos(directorio, ss)
         hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
         for archivo in archivos:
@@ -348,7 +352,48 @@ class Excel:
                     print(f"Error al procesar el archivo {archivo}: {e}")
                 except (IndexError) as e:
                     print(f"Hoja vacia {hoja}")
-        funciones.renombrarArchivos(directorio,"",".xlsx")
+        try:
+            nuevaRuta = os.path.join(directorio, "PROCESADO SS.xlsx")
+            os.rename(archivos[0], nuevaRuta)
+        except OSError as error:
+            print(f"Error al renombrar el archivo: {error}")
+        return print("Proceso finalizado.")
+    
+    def mermas():
+        directorio = funciones.carpetaDescargas()
+        archivos = funciones.buscarArchivos(directorio,"",".xlsx")
+        aaa = ["AAA DAÑADOS.csv", "AAA NC.csv", "AAA ELIMINADOS.csv", "PROCESADO MERMAS.xlsx"]        
+        funciones.borrarArchivos(directorio, aaa)
+        hojas = ["P. DAÑADOS", "PRODUCTOS DAÑADOS POR NC", "ESTATUS ELIMINADO"]
+        for archivo in archivos:
+            for hoja,nuevo_archivo in zip(hojas,aaa):
+                saltar = 6
+                try:
+                    df = pd.read_excel(archivo, 
+                                    sheet_name = hoja, 
+                                    usecols = "A:B", 
+                                    skiprows = saltar, 
+                                    na_values = [''])
+                    df = df[[df.columns[1], df.columns[0]]]
+
+                    df_limpio = df.dropna(how='all')
+
+                    if not df_limpio.empty:
+                        df_limpio = df_limpio.iloc[0:]
+                        df_limpio.to_csv(os.path.join(directorio, nuevo_archivo), index=False, sep=';', header=None, float_format='%d')
+                        print(f"Datos invertidos guardados en {nuevo_archivo}\n")
+                    else:
+                        print(f"No hay datos para guardar en {nuevo_archivo}\n")
+
+                except (FileNotFoundError, PermissionError, ValueError) as e:
+                    print(f"Error al procesar el archivo {archivo}: {e}")
+                except (IndexError) as e:
+                    print(f"Hoja vacia {hoja}")
+        try:
+            nuevaRuta = os.path.join(directorio, "PROCESADO MERMAS.xlsx")
+            os.rename(archivos[0], nuevaRuta)
+        except OSError as error:
+            print(f"Error al renombrar el archivo: {error}")
         return print("Proceso finalizado.")
 
 if __name__ == "__main__":
@@ -360,7 +405,7 @@ if __name__ == "__main__":
         except ImportError:sub.check_call(['pip', 'install', lib])
         return
 
-    import os, time, csv, json
+    import os, time, csv
     import datetime as dt
     import base64 as b6
     from multiprocessing import Pool
