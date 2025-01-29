@@ -97,7 +97,7 @@ class VentanaConfigurar(Ventana):
         self.crearEtiqueta(" ", 0, 0)
         self.crearEtiqueta("Usuario: ", 0, 1)
         self.crearEtiqueta("Contraseña: ", 1, 1)
-        self.crearEtiqueta("Carpeta de descargas: ", 1, 1)
+        self.crearEtiqueta("Carpeta de descargas: ", 2, 1)
 
         self.userDato =     self.crearEntradaTexto(0, 2, 30, 1)
         self.passDato =     self.crearEntradaTexto(1, 2, 30, 1)
