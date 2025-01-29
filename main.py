@@ -73,8 +73,8 @@ class VentanaSphinx(Ventana):
         web = paginaWeb(self.urlInv)
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
-        for sucursal in listado[0]:
-            web.cerrarInventario(sucursal)
+        for sucursal,pdv in listado.items():
+            web.cerrarInventario(sucursal),pdv
         web.quit()
         return  print("Inventarios del dia cerrados.")
     
@@ -83,8 +83,8 @@ class VentanaSphinx(Ventana):
         web = paginaWeb(self.urlDif)
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
-        for sucursal in listado[0]:
-            web.reporteDiferencias(sucursal)
+        for sucursal,pdv in listado.items():
+            web.reporteDiferencias(sucursal,pdv)
         Excel.renombrarArchivos()
         web.quit()
         return print("Documentos extraidos")
@@ -159,7 +159,7 @@ class paginaWeb:
             print("No se pudo realizar login.")
         return time.sleep(2)
 
-    def cerrarInventario(self, sucursal):
+    def cerrarInventario(self, sucursal,pdv):
         try:
             select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
             select = Select(select_element)
@@ -174,11 +174,11 @@ class paginaWeb:
                 print("Aceptado!")
             except TimeoutException:
                 print("No se detecto alerta")
-                print(sucursal)
+                print(pdv)
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error al cerrar inventario {sucursal}")
 
-    def reporteDiferencias(self, sucursal):
+    def reporteDiferencias(self, sucursal,pdv):
         try:
             select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
             select = Select(select_element)
@@ -197,7 +197,7 @@ class paginaWeb:
             botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
             botonExcel.click()
             Excel.renombrarArchivos()
-            print(sucursal)
+            print(pdv)
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error al descargar informe {sucursal}: {e}")
             return time.sleep(1)
