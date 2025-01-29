@@ -256,10 +256,13 @@ class funciones:
             messagebox.showerror("Error", "No se encontró el archivo raíz")
 
     def leerCSV(documento):
-        with open(documento, 'r') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
-            listado = {row[0]: row[1] for row in reader}
-        print("lista creada")
+        try:
+            listado = {}
+            with open(documento, 'r',encoding= 'utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                listado = {row[0]: row[1] for row in reader}
+        except:
+            print("No se pudo crear la lista")
         return listado
 
     def clear():
