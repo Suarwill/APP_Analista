@@ -146,14 +146,17 @@ class paginaWeb:
         self.url = url
 
     def login(self,NAMEBoxUsuario,IDBoxPassword,IDBotonLogin):
-        self.driver.get(self.url)
-        usuario = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, NAMEBoxUsuario)))
-        usuario.send_keys(self.username)
-        contrasena = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, IDBoxPassword)))
-        contrasena.send_keys(self.password)
-        botonLogin = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, IDBotonLogin)))
-        botonLogin.click()
-        print(funciones.decB64("QWNjZXNvIENvbnNlZ3VpZG8="))
+        try:
+            self.driver.get(self.url)
+            usuario = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, NAMEBoxUsuario)))
+            usuario.send_keys(self.username)
+            contrasena = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, IDBoxPassword)))
+            contrasena.send_keys(self.password)
+            botonLogin = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, IDBotonLogin)))
+            botonLogin.click()
+            print(funciones.decB64("QWNjZXNvIENvbnNlZ3VpZG8="))
+        except:
+            print("No se pudo realizar login.")
         return time.sleep(2)
 
     def cerrarInventario(self, sucursal):
