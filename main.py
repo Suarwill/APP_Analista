@@ -256,9 +256,10 @@ class funciones:
             messagebox.showerror("Error", "No se encontró el archivo raíz")
 
     def leerCSV(documento):
+        directorio = os.getcwd()
         try:
             listado = {}
-            with open(documento, 'r',encoding= 'utf-8') as csvfile:
+            with open(os.path.join(directorio,documento), 'r',encoding= 'utf-8') as csvfile:
                 reader = csv.reader(csvfile)
                 listado = {row[0]: row[1] for row in reader}
         except:
