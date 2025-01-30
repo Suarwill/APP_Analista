@@ -258,8 +258,7 @@ class funciones:
     def leerCSV(documento):
         busqueda = os.path.join(os.getcwd(), documento)
         listado = {}
-        print(busqueda)
-        with open(busqueda, 'r') as csvfile:
+        with open(busqueda, 'r', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             listado = {row[0]: row[1] for row in reader}
         return listado
