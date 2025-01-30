@@ -1,0 +1,48 @@
+---
+config:
+  theme: mc
+  layout: dagre
+  look: neo
+---
+stateDiagram
+  direction LR
+  [*] --> Inicio
+  Inicio --> Ventana_Principal:Interfaz Validada
+  Ventana_Principal --> Ventana_Excel:Abrir
+  Ventana_Excel --> Funciones_Excel:Ejecutando Función Excel
+  Funciones_Excel --> Extraccion_de_Mermas
+  Funciones_Excel --> Extraccion_de_Sobrestock
+  Extraccion_de_Mermas --> Proceso_Excel:Buscando Archivos
+  Extraccion_de_Sobrestock --> Proceso_Excel:Buscando Archivos
+  Proceso_Excel --> Archivos_AAA:Renombrando Archivos AAA
+  Archivos_AAA --> Fin_de_Proceso
+  Ventana_Principal --> Ventana_Sphinx:Abrir
+  Ventana_Sphinx --> Extraccion_de_Diferencias
+  Ventana_Sphinx --> Cierre_Inventarios
+  Ventana_Sphinx --> Unificacion_de_Diferencias
+  Cierre_Inventarios --> Login:Selenium
+  Extraccion_de_Diferencias --> Login:Selenium
+  Login --> Descarga_Diferencias:Selenium
+  Descarga_Diferencias --> Fin_de_Proceso
+  Unificacion_de_Diferencias --> Unificacion:Renombrado y Unificacion de Archivos
+  Unificacion --> Archivo_Unificado:Archivo Creado
+  Archivo_Unificado --> Fin_de_Proceso
+  Login --> Cerrar_Inventarios:Selenium
+  Cerrar_Inventarios --> Fin_de_Proceso
+  Ventana_Principal --> Ventana_Configuracion:Abrir
+  Ventana_Configuracion --> Usuario:Ingresar Usuario
+  Ventana_Configuracion --> Password:Ingresar Contraseña
+  Ventana_Configuracion --> Carpeta_de_Archivos:Seleccionar Carpeta
+  Usuario --> Guardar_Config
+  Password --> Guardar_Config
+  Carpeta_de_Archivos --> Guardar_Config
+  Guardar_Config --> Archivo_Env:Guardando en archivo .env
+  Ventana_Principal --> Cierre:Cerrar Aplicación
+  Cierre --> [*]
+  Fin_de_Proceso --> [*]
+  style Ventana_Excel,Funciones_Excel,Extraccion_de_Mermas,Extraccion_de_Sobrestock fill:#00C853
+  style Proceso_Excel,Archivos_AAA fill:#C8E6C9
+  style Ventana_Sphinx,Extraccion_de_Diferencias,Cierre_Inventarios,Unificacion_de_Diferencias fill:#FF6D00
+  style Login,Unificacion fill:#FFE0B2
+  style Ventana_Configuracion fill:#2962FF
+  style Usuario,Carpeta_de_Archivos,Guardar_Config fill:#BBDEFB
