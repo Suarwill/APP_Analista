@@ -371,8 +371,11 @@ class Excel:
         directorio = funciones.carpetaDescargas()
         archivos = funciones.buscarArchivos(directorio,"",".xlsx")
         ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO SS.xlsx"]
-        funciones.borrarArchivos(directorio, ss)
         hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
+        funciones.borrarArchivos(directorio, ss)
+        try: os.rename(archivos[0], os.path.join(directorio, ss[-1]))
+        except OSError as error: print(f"Error al renombrar el archivo: {error}")
+
         for archivo in archivos:
             for hoja,nuevo_archivo in zip(hojas,ss):
                 if hoja == "SOBRESTOCK - NUEVO": saltar = 6 
@@ -398,19 +401,17 @@ class Excel:
                     print(f"Error al procesar el archivo {archivo}: {e}")
                 except (IndexError) as e:
                     print(f"Hoja vacia {hoja}")
-        try:
-            nuevaRuta = os.path.join(directorio, "PROCESADO SS.xlsx")
-            os.rename(archivos[0], nuevaRuta)
-        except OSError as error:
-            print(f"Error al renombrar el archivo: {error}")
         return print("Proceso finalizado.")
     
     def mermas():
         directorio = funciones.carpetaDescargas()
         archivos = funciones.buscarArchivos(directorio,"",".xlsx")
-        aaa = ["AAA DAÑADOS.csv", "AAA NC.csv", "AAA ELIMINADOS.csv", "PROCESADO MERMAS.xlsx"]        
-        funciones.borrarArchivos(directorio, aaa)
+        aaa = ["AAA DAÑADOS.csv", "AAA NC.csv", "AAA ELIMINADOS.csv", "PROCESADO MERMAS.xlsx"]
         hojas = ["P. DAÑADOS", "PRODUCTOS DAÑADOS POR NC", "ESTATUS ELIMINADO"]
+        funciones.borrarArchivos(directorio, aaa)
+        try: os.rename(archivos[0], os.path.join(directorio, aaa[-1]))
+        except OSError as error: print(f"Error al renombrar el archivo: {error}")
+        
         for archivo in archivos:
             for hoja,nuevo_archivo in zip(hojas,aaa):
                 saltar = 6
@@ -430,16 +431,10 @@ class Excel:
                         print(f"Datos invertidos guardados en {nuevo_archivo}\n")
                     else:
                         print(f"No hay datos para guardar en {nuevo_archivo}\n")
-
                 except (FileNotFoundError, PermissionError, ValueError) as e:
                     print(f"Error al procesar el archivo {archivo}: {e}")
                 except (IndexError) as e:
                     print(f"Hoja vacia {hoja}")
-        try:
-            nuevaRuta = os.path.join(directorio, "PROCESADO MERMAS.xlsx")
-            os.rename(archivos[0], nuevaRuta)
-        except OSError as error:
-            print(f"Error al renombrar el archivo: {error}")
         return print("Proceso finalizado.")
 
 if __name__ == "__main__":
