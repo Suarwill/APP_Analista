@@ -321,25 +321,25 @@ class Excel:
         dir =  funciones.carpetaDescargas()
         columna, hoja, sep = 0,'sphinx', '/'
         xlsxs = funciones.buscarArchivos(dir,".xlsx")
-        for x in xlsxs:
+        for archivo in xlsxs:
             try:
                 # Leer el archivo Excel sin especificar el encabezado
-                df = pd.read_excel(x, sheet_name=hoja, nrows=5, header=None)
+                df = pd.read_excel(archivo, sheet_name=hoja, nrows=5, header=None)
                 # Verificar si la fila 4 existe y tiene un valor en la columna especificada
                 if df.shape[0] >= 4 and not pd.isna(df.iloc[3][columna]):
                     valor_celda = df.iloc[3][columna]
                     # Dividir el valor por el separador y tomar la segunda parte
                     nueva_parte = valor_celda.split(sep)[1].strip()
                     # Construir el nuevo nombre de archivo
-                    dir, extension = os.path.splitext(x)
-                    nuevo_nombre = nueva_parte + extension
+                    extension = os.path.splitext(archivo)
+                    nuevo_nombre = dir + nueva_parte + extension
                     # Renombrar el archivo
-                    os.rename(x, nuevo_nombre)
+                    os.rename(archivo, nuevo_nombre)
                     print(f"Archivo renombrado a: {nuevo_nombre}")
                 else:
-                    print(f"La fila 4 en la hoja '{hoja}' del archivo {x} está vacía o no existe.")
+                    print(f"La fila 4 en la hoja '{hoja}' del archivo {archivo} está vacía o no existe.")
             except (FileNotFoundError, PermissionError, IndexError, ValueError) as e:
-                print(f"Error al procesar el archivo {x}: {e}")
+                print(f"Error al procesar el archivo {archivo}: {e}")
         funciones.clear()
         return print("Renombrado finalizado.") 
 
