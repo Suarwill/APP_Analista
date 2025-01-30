@@ -187,11 +187,10 @@ class paginaWeb:
             select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "inventario_tipo")))
             select = Select(select_element)
             select.select_by_value("2") # Productos con Diferencias
-            time.sleep(1)
 
             botonEjecutar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnEjecuta")))
             botonEjecutar.click()
-            time.sleep(2)
+            time.sleep(1)
 
             botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
             botonExcel.click()
