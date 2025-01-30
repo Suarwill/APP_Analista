@@ -82,7 +82,6 @@ class VentanaSphinx(Ventana):
         funciones.clear()
         web = paginaWeb(self.urlDif)
         listado = funciones.leerCSV("Sucursales.csv")
-        print(listado)
         web.login("login","password","btnSubmit")
         for sucursal,pdv in listado.items():
             web.reporteDiferencias(sucursal,pdv)
@@ -196,7 +195,6 @@ class paginaWeb:
 
             botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
             botonExcel.click()
-            Excel.renombrarArchivos()
             print(pdv)
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error al descargar informe {sucursal}: {e}")
@@ -348,6 +346,7 @@ class Excel:
 
     def unificar():
         # Unificado de archivos en uno SOLO
+        Excel.renombrarArchivos()
         dir = funciones.carpetaDescargas()
         df_final = pd.DataFrame()
         archivos = funciones.buscarArchivos(dir,".xlsx")
