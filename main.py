@@ -76,6 +76,7 @@ class VentanaSphinx(Ventana):
         for sucursal,pdv in listado.items():
             web.cerrarInventario(sucursal),pdv
         web.quit()
+        self.destroy()
         return  print("Inventarios del dia cerrados.")
     
     def extraerDiferencias(self):
@@ -86,6 +87,7 @@ class VentanaSphinx(Ventana):
         for sucursal,pdv in listado.items():
             web.reporteDiferencias(sucursal,pdv)
         web.quit()
+        self.destroy()
         return print("Documentos extraidos")
 
 class VentanaConfigurar(Ventana):
@@ -281,12 +283,14 @@ class funciones:
                 env_file.write(f"PERFIL_CHROME={chrome}")
                 env_file.close()
             return print("Archivo env. creado!")
+        else: print("Archivo env. ya existe!")
         if not os.path.exists("Sucursales.csv"):
             with open("Sucursales.csv", "w", newline="") as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(["ID_sucursal,Nombre_sucursal"])
                 csv_file.close()
             return print("Sucursales.csv creado!")
+        else: print("Sucursales.csv ya existe!")
         return ("Continuando...")
 
     def carpetaDescargas():
@@ -371,6 +375,7 @@ class Excel:
                 print(f"Error al procesar el archivo {x}: {e}")
         nuevo_archivo = os.path.join(dir, "unificados.xlsx")
         df_final.to_excel(nuevo_archivo, index=False)
+        funciones.clear()
         return print("Unificación realizada.")
 
     def sobrestock():
@@ -407,6 +412,7 @@ class Excel:
                     print(f"Hoja vacia {hoja}")
         try: os.rename(archivos[0], os.path.join(directorio, ss[-1]))
         except OSError as error: print(f"Error al renombrar el archivo: {error}")
+        funciones.clear()
         return print("Proceso finalizado.")
     
     def mermas():
@@ -442,6 +448,7 @@ class Excel:
 
         try: os.rename(archivos[0], os.path.join(directorio, aaa[-1]))
         except OSError as error: print(f"Error al renombrar el archivo: {error}")
+        funciones.clear()
         return print("Proceso finalizado.")
 
 if __name__ == "__main__":
