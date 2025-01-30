@@ -332,7 +332,7 @@ class Excel:
                     nueva_parte = valor_celda.split(sep)[1].strip()
                     # Construir el nuevo nombre de archivo
                     extension = os.path.splitext(archivo)
-                    nuevo_nombre = f"{dir}{nueva_parte}{extension}"
+                    nuevo_nombre = str(dir+nueva_parte+extension)
                     # Renombrar el archivo
                     os.rename(archivo, nuevo_nombre)
                     print(f"Archivo renombrado a: {nuevo_nombre}")
