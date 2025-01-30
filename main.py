@@ -317,31 +317,38 @@ class Excel:
         pass
 
     def renombrarArchivos():
-        # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
-        dir =  funciones.carpetaDescargas()
-        columna, hoja, sep = 0,'sphinx', '/'
-        xlsxs = funciones.buscarArchivos(dir,".xlsx")
-        for archivo in xlsxs:
-            try:
-                # Leer el archivo Excel sin especificar el encabezado
-                df = pd.read_excel(archivo, sheet_name=hoja, nrows=5, header=None)
-                # Verificar si la fila 4 existe y tiene un valor en la columna especificada
-                if df.shape[0] >= 4 and not pd.isna(df.iloc[3][columna]):
-                    valor_celda = df.iloc[3][columna]
-                    # Dividir el valor por el separador y tomar la segunda parte
-                    nueva_parte = valor_celda.split(sep)[1].strip()
-                    # Construir el nuevo nombre de archivo
-                    extension = os.path.splitext(archivo)
-                    nuevo_nombre = str(dir+nueva_parte+extension)
-                    # Renombrar el archivo
-                    os.rename(archivo, nuevo_nombre)
-                    print(f"Archivo renombrado a: {nuevo_nombre}")
-                else:
-                    print(f"La fila 4 en la hoja '{hoja}' del archivo {archivo} está vacía o no existe.")
-            except (FileNotFoundError, PermissionError, IndexError, ValueError) as e:
-                print(f"Error al procesar el archivo {archivo}: {e}")
+        """Renombra archivos Excel "Inventario" usando la sucursal de la hoja 'sphinx'."""
+
+        dir_descargas = funciones.carpetaDescargas()  # Obtén el directorio de descargas
+        columna, hoja, sep = 0, 'sphinx', '/'
+        archivos_excel = funciones.buscarArchivos(dir_descargas, ".xlsx")  # Busca archivos .xlsx
+
+        for archivo in archivos_excel:
+            if "Inventario" in os.path.basename(archivo): # Verifica si "Inventario" está en el nombre del archivo
+                try:
+                    df = pd.read_excel(archivo, sheet_name=hoja, nrows=5, header=None)
+
+                    if df.shape[0] >= 4 and not pd.isna(df.iloc[3][columna]):
+                        valor_celda = df.iloc[3][columna]
+                        nueva_parte = valor_celda.split(sep)[1].strip()
+
+                        nombre_base, extension = os.path.splitext(archivo)  # Separa nombre y extensión
+                        nuevo_nombre = os.path.join(dir_descargas, f"{nueva_parte}{extension}") # Usa os.path.join y f-strings
+
+                        os.rename(archivo, nuevo_nombre)
+                        print(f"Archivo renombrado a: {nuevo_nombre}")
+                    else:
+                        print(f"Datos insuficientes en {archivo} (fila 4 vacía o inexistente).")
+
+                except (FileNotFoundError, PermissionError, IndexError, ValueError, FileExistsError) as e: #Agrega FileExistsError
+                    print(f"Error al procesar {archivo}: {e}")
+            else:
+                print(f"Archivo {archivo} no contiene 'Inventario' en el nombre. Omitido.")
+
+
         funciones.clear()
-        return print("Renombrado finalizado.") 
+        print("Renombrado finalizado.")  # Imprime el mensaje directamente
+        return  # No es necesario usar print dentro de return
 
     def unificar():
         # Unificado de archivos en uno SOLO
