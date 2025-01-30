@@ -228,11 +228,11 @@ class funciones:
             print ("No es posible continuar con el proceso.")
         return x
     
-    def buscarArchivos(directorio,nombreInicial,tipoArchivo):
+    def buscarArchivos(directorio,tipoArchivo):
         lista = []
         archivos = os.listdir(directorio)
         for archivo in archivos:
-            if archivo.endswith(tipoArchivo) or (archivo.startswith(str(nombreInicial) and archivo.endswith(tipoArchivo))):
+            if archivo.endswith(tipoArchivo):
                 lista.append(os.path.join(directorio, archivo))
             else:
                 print("No se encontraron archivos")
@@ -323,7 +323,7 @@ class Excel:
         # Renombrar todos los archivos "Inventario" y colocar el renombra como su sucursal
         dir =  funciones.carpetaDescargas()
         columna, hoja, sep = 0,'sphinx', '/'
-        xlsxs = funciones.buscarArchivos(dir,"Inventario",".xlsx")
+        xlsxs = funciones.buscarArchivos(dir,".xlsx")
         for x in xlsxs:
             try:
                 # Leer el archivo Excel sin especificar el encabezado
@@ -350,7 +350,7 @@ class Excel:
         # Unificado de archivos en uno SOLO
         dir = funciones.carpetaDescargas()
         df_final = pd.DataFrame()
-        archivos = funciones.buscarArchivos(dir,"Inventario",".xlsx") 
+        archivos = funciones.buscarArchivos(dir,".xlsx")
         for x in archivos:
             try:
                 df = pd.read_excel(os.path.join(dir, x), header=5, usecols='A:E')
@@ -369,7 +369,7 @@ class Excel:
 
     def sobrestock():
         directorio = funciones.carpetaDescargas()
-        archivos = funciones.buscarArchivos(directorio,"",".xlsx")
+        archivos = funciones.buscarArchivos(directorio,".xlsx")
         ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO SS.xlsx"]
         hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
         funciones.borrarArchivos(directorio, ss)
@@ -405,7 +405,7 @@ class Excel:
     
     def mermas():
         directorio = funciones.carpetaDescargas()
-        archivos = funciones.buscarArchivos(directorio,"",".xlsx")
+        archivos = funciones.buscarArchivos(directorio,".xlsx")
         aaa = ["AAA DAÑADOS.csv", "AAA NC.csv", "AAA ELIMINADOS.csv", "PROCESADO MERMAS.xlsx"]
         hojas = ["P. DAÑADOS", "PRODUCTOS DAÑADOS POR NC", "ESTATUS ELIMINADO"]
         funciones.borrarArchivos(directorio, aaa)
