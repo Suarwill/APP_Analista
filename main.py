@@ -348,7 +348,8 @@ class Excel:
 
         funciones.clear()
         print("Renombrado finalizado.")  # Imprime el mensaje directamente
-        return  # No es necesario usar print dentro de return
+        return  time.sleep(1)
+
 
     def unificar():
         # Unificado de archivos en uno SOLO
@@ -369,7 +370,6 @@ class Excel:
             except Exception as e:
                 print(f"Error al procesar el archivo {x}: {e}")
         df_final.to_excel("unificados.xlsx", index=False)
-        funciones.clear()
         return print("Unificación realizada.")
 
     def sobrestock():
