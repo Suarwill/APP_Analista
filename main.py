@@ -229,8 +229,14 @@ class funciones:
         return x
     
     def buscarArchivos(directorio,nombreInicial,tipoArchivo):
-        listado = os.listdir(directorio)
-        return [os.path.join(dir, archivo) for archivo in listado if archivo.endswith(tipoArchivo) and archivo.startswith(nombreInicial)]
+        lista = []
+        archivos = os.listdir(directorio)
+        for archivo in archivos:
+            if archivo.endswith(tipoArchivo) or archivo.startswith(str(nombreInicial)):
+                lista.append(os.path.join(directorio, archivo))
+            else:
+                print("No se encontraron archivos")
+        return lista
 
     def borrarArchivos(directorio, listaDeArchivos):
         warnings.filterwarnings("ignore", category=UserWarning)
