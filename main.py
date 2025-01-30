@@ -43,7 +43,7 @@ class VentanaPrincipal(Ventana):
 
 class VentanaExcel(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Funciones en Excel",200,400,3)
+        super().__init__("Funciones en Excel",200,300,3)
 
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Extraer Mermas", Excel.mermas, 1, 1, background="lightblue")
@@ -56,7 +56,7 @@ class VentanaExcel(Ventana):
 
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Secundaria", 300, 500,3)
+        super().__init__("Secundaria", 300, 450,3)
         
         self.urlDif = "https://benny.sphinx.cl/6230.mod"
         self.urlInv = "https://benny.sphinx.cl/6210.mod"
