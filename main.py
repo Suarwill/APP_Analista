@@ -373,8 +373,6 @@ class Excel:
         ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO SS.xlsx"]
         hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
         funciones.borrarArchivos(directorio, ss)
-        try: os.rename(archivos[0], os.path.join(directorio, ss[-1]))
-        except OSError as error: print(f"Error al renombrar el archivo: {error}")
 
         for archivo in archivos:
             for hoja,nuevo_archivo in zip(hojas,ss):
@@ -401,6 +399,8 @@ class Excel:
                     print(f"Error al procesar el archivo {archivo}: {e}")
                 except (IndexError) as e:
                     print(f"Hoja vacia {hoja}")
+        try: os.rename(archivos[0], os.path.join(directorio, ss[-1]))
+        except OSError as error: print(f"Error al renombrar el archivo: {error}")
         return print("Proceso finalizado.")
     
     def mermas():
@@ -409,8 +409,6 @@ class Excel:
         aaa = ["AAA DAÑADOS.csv", "AAA NC.csv", "AAA ELIMINADOS.csv", "PROCESADO MERMAS.xlsx"]
         hojas = ["P. DAÑADOS", "PRODUCTOS DAÑADOS POR NC", "ESTATUS ELIMINADO"]
         funciones.borrarArchivos(directorio, aaa)
-        try: os.rename(archivos[0], os.path.join(directorio, aaa[-1]))
-        except OSError as error: print(f"Error al renombrar el archivo: {error}")
         
         for archivo in archivos:
             for hoja,nuevo_archivo in zip(hojas,aaa):
@@ -435,6 +433,9 @@ class Excel:
                     print(f"Error al procesar el archivo {archivo}: {e}")
                 except (IndexError) as e:
                     print(f"Hoja vacia {hoja}")
+
+        try: os.rename(archivos[0], os.path.join(directorio, aaa[-1]))
+        except OSError as error: print(f"Error al renombrar el archivo: {error}")
         return print("Proceso finalizado.")
 
 if __name__ == "__main__":
