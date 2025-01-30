@@ -1,9 +1,9 @@
 class Ventana:
-    def __init__(self, titulo, width, height):
+    def __init__(self, titulo, width, height,posicion):
         self.ventana = Tk()
         load_dotenv(override=True)
         self.ventana.title(titulo)
-        self.ventana.geometry(f"{width}x{height}+{int((self.ventana.winfo_screenwidth()-width)/2)}+{int((self.ventana.winfo_screenheight()-height)/2)}")
+        self.ventana.geometry(f"{width}x{height}+{int((self.ventana.winfo_screenwidth()-width)/posicion)}+{int((self.ventana.winfo_screenheight()-height)/posicion)}")
 
     def crearBoton(self, texto, comando, fila, columna, **kwargs):
         interfaz = funciones.validador()
@@ -30,7 +30,7 @@ class Ventana:
 
 class VentanaPrincipal(Ventana):
     def __init__(self):
-        super().__init__("Principal", 300, 400)
+        super().__init__("Principal", 300, 400,2)
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Archivos Excel", lambda: VentanaExcel(self.ventana), 1, 1, background="lightblue")
         self.crearBoton("Funciones en Sphinx", lambda: VentanaSphinx(self.ventana), 2, 1, background="lightblue")
@@ -43,7 +43,7 @@ class VentanaPrincipal(Ventana):
 
 class VentanaExcel(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Funciones en Excel",200,400)
+        super().__init__("Funciones en Excel",200,400,3)
 
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Extraer Mermas", Excel.mermas, 1, 1, background="lightblue")
@@ -56,7 +56,7 @@ class VentanaExcel(Ventana):
 
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Secundaria", 300, 500)
+        super().__init__("Secundaria", 300, 500,3)
         
         self.urlDif = "https://benny.sphinx.cl/6230.mod"
         self.urlInv = "https://benny.sphinx.cl/6210.mod"
@@ -94,7 +94,7 @@ class VentanaSphinx(Ventana):
 
 class VentanaConfigurar(Ventana):
     def __init__(self, ventana_padre):
-        super().__init__("Configuraciones",400, 200)
+        super().__init__("Configuraciones",400, 200,2)
         load_dotenv(override=True)
 
         self.crearEtiqueta(" ", 0, 0)
