@@ -6,7 +6,9 @@ class Ventana:
         self.ventana.geometry(f"{width}x{height}+{int((self.ventana.winfo_screenwidth()-width)/2)}+{int((self.ventana.winfo_screenheight()-height)/2)}")
 
     def crearBoton(self, texto, comando, fila, columna, **kwargs):
-        Button(self.ventana, text=texto, command=comando, **kwargs).grid(row=fila, column=columna, sticky="news")
+        interfaz = funciones.validador()
+        if interfaz == True:
+            Button(self.ventana, text=texto, command=comando, **kwargs).grid(row=fila, column=columna, sticky="news")
 
     def crearEtiqueta(self, texto, fila, columna, **kwargs):
         Label(self.ventana, text=texto, **kwargs).grid(row=fila, column=columna, padx=5, pady=5)
@@ -55,7 +57,7 @@ class VentanaExcel(Ventana):
 class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
         super().__init__("Secundaria", 300, 500)
-
+        
         self.urlDif = "https://benny.sphinx.cl/6230.mod"
         self.urlInv = "https://benny.sphinx.cl/6210.mod"
 
@@ -213,18 +215,14 @@ class funciones:
     
     def codec(w, cif=True):
         x , i = "" , 1
-        valido = funciones.validador()
-        if valido == True:
-            for c in w:
-                y = ord(c)
-                if cif : nV = (y+i)%256
-                else: nV = (y-i)%256
-                i += 1
-                nV = max(0, min(nV, 0x10FFFF))
-                nC = chr(nV)
-                x += nC
-        else:
-            print ("No es posible continuar con el proceso.")
+        for c in w:
+            y = ord(c)
+            if cif : nV = (y+i)%256
+            else: nV = (y-i)%256
+            i += 1
+            nV = max(0, min(nV, 0x10FFFF))
+            nC = chr(nV)
+            x += nC
         return x
     
     def buscarArchivos(directorio,tipoArchivo):
