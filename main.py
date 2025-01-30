@@ -369,7 +369,7 @@ class Excel:
                 df_final = pd.concat([df_final, df], ignore_index=True)
             except Exception as e:
                 print(f"Error al procesar el archivo {x}: {e}")
-        df_final.to_excel("unificados.xlsx", index=False)
+        df_final.to_excel(f"{dir}unificados.xlsx", index=False)
         return print("Unificación realizada.")
 
     def sobrestock():
