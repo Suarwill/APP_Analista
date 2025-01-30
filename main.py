@@ -81,8 +81,9 @@ class VentanaSphinx(Ventana):
     def extraerDiferencias(self):
         funciones.clear()
         web = paginaWeb(self.urlDif)
-        web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
+        print(listado)
+        web.login("login","password","btnSubmit")
         for sucursal,pdv in listado.items():
             web.reporteDiferencias(sucursal,pdv)
         web.quit()
@@ -156,7 +157,7 @@ class paginaWeb:
             print(funciones.decB64("QWNjZXNvIENvbnNlZ3VpZG8="))
         except:
             print("No se pudo realizar login.")
-        return time.sleep(2)
+        return
 
     def cerrarInventario(self, sucursal,pdv):
         try:
@@ -255,14 +256,12 @@ class funciones:
             messagebox.showerror("Error", "No se encontró el archivo raíz")
 
     def leerCSV(documento):
-        directorio = os.getcwd()
+        busqueda = os.path.join(os.getcwd(), documento)
         listado = {}
-        try:
-            with open(os.path.join(directorio,documento), 'r', encoding= 'utf-8', delimeter=',') as csvfile:
-                reader = csv.reader(csvfile)
-                listado = {row[0]: row[1] for row in reader}
-        except:
-            print("No se pudo crear la lista")
+        print(busqueda)
+        with open(busqueda, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            listado = {row[0]: row[1] for row in reader}
         return listado
 
     def clear():
