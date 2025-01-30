@@ -232,7 +232,7 @@ class funciones:
         lista = []
         archivos = os.listdir(directorio)
         for archivo in archivos:
-            if archivo.endswith(tipoArchivo) or archivo.startswith(str(nombreInicial)):
+            if archivo.endswith(tipoArchivo) or (archivo.startswith(str(nombreInicial) and archivo.endswith(tipoArchivo))):
                 lista.append(os.path.join(directorio, archivo))
             else:
                 print("No se encontraron archivos")
