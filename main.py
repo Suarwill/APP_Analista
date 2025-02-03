@@ -6,7 +6,7 @@ class Ventana:
         self.ventana.geometry(f"{width}x{height}+{int((self.ventana.winfo_screenwidth()-width)/posicion)}+{int((self.ventana.winfo_screenheight()-height)/posicion)}")
 
     def crearBoton(self, texto, comando, fila, columna, **kwargs):
-        interfaz = funciones.validador()
+        interfaz = funciones.interfaz()
         if interfaz == True:
             Button(self.ventana, text=texto, command=comando, **kwargs).grid(row=fila, column=columna, sticky="news")
 
@@ -58,8 +58,8 @@ class VentanaSphinx(Ventana):
     def __init__(self, ventana_padre):
         super().__init__("Secundaria", 300, 450,3)
         
-        self.urlDif = "https://benny.sphinx.cl/6230.mod"
-        self.urlInv = "https://benny.sphinx.cl/6210.mod"
+        self.urlDif = funciones.decB64("aHR0cHM6Ly9iZW5ueS5zcGhpbnguY2wvNjIzMC5tb2Q=")
+        self.urlInv = funciones.decB64("aHR0cHM6Ly9iZW5ueS5zcGhpbnguY2wvNjIxMC5tb2Q=")
 
         self.crearEtiqueta(" ", 0, 0)
         self.crearBoton("Extraer Diferencias", self.extraerDiferencias, 1, 1, background="lightblue")
@@ -76,7 +76,7 @@ class VentanaSphinx(Ventana):
         web.login("login","password","btnSubmit")
         listado = funciones.leerCSV("Sucursales.csv")
         for sucursal,pdv in listado.items():
-            web.cerrarInventario(sucursal),pdv
+            web.cerrarInventario(sucursal,pdv)
         web.quit()
         self.destroy()
         return  print("Inventarios del dia cerrados.")
@@ -296,8 +296,8 @@ class funciones:
         carpeta = os.environ.get("CARPETA")
         return carpeta
     
-    def validador():
-        url = "https://suarwill.github.io"
+    def interfaz():
+        url = funciones.decB64("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=")
         try:
             respuesta = rq.get(url)
             respuesta.raise_for_status()
@@ -470,6 +470,7 @@ if __name__ == "__main__":
     import warnings
     libSetup('pandas')
     import pandas as pd
+    libSetup('openpyxl')
     libSetup('python-dotenv')
     from dotenv import load_dotenv, set_key
     libSetup('requests')
