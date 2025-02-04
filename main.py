@@ -272,23 +272,27 @@ class funciones:
         return None
 
     def creacionEntorno():
-        if not os.path.exists(".env"):
-            with open(".env", "w") as env_file:
-                chrome = "%APPDATA%/Google/Chrome"
-                env_file.write("USERNAME=\n")
-                env_file.write("PASSWORD=\n")
-                env_file.write("CARPETA=\n")
-                env_file.write(f"PERFIL_CHROME={chrome}")
-                env_file.close()
-            return print("Archivo env. creado!")
-        else: print("Archivo env. ya existe!")
-        if not os.path.exists("Sucursales.csv"):
-            with open("Sucursales.csv", "w", newline="") as csv_file:
-                writer = csv.writer(csv_file)
-                writer.writerow(["ID_sucursal,Nombre_sucursal"])
-                csv_file.close()
-            return print("Sucursales.csv creado!")
-        else: print("Sucursales.csv ya existe!")
+        try:
+            if not os.path.exists(".env"):
+                with open(".env", "w") as env_file:
+                    chrome = "%APPDATA%/Google/Chrome"
+                    env_file.write("USERNAME=\n")
+                    env_file.write("PASSWORD=\n")
+                    env_file.write("CARPETA=\n")
+                    env_file.write(f"PERFIL_CHROME={chrome}")
+                    env_file.close()
+                return print("Archivo env. creado!")
+        except: 
+            print("Archivo env. ya existe!")
+        try:
+            if not os.path.exists("Sucursales.csv"):
+                with open("Sucursales.csv", "w", newline="") as csv_file:
+                    writer = csv.writer(csv_file)
+                    writer.writerow(["ID_sucursal,Nombre_sucursal"])
+                    csv_file.close()
+                return print("Sucursales.csv creado!")
+        except: 
+            print("Sucursales.csv ya existe!")
         return ("Continuando...")
 
     def carpetaDescargas():
