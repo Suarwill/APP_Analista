@@ -18,4 +18,6 @@ Esta aplicación está diseñada para automatizar tareas repetitivas y tediosas 
 **Creado por:**
 William Suarez
 
-![Diagrama Analista_Inventario](./Diagrama.png)
+![Diagrama Analista_Inventario](./archivos/Diagrama.png)
+
+![Screenshoot](./archivos/Screenshot003.png)
