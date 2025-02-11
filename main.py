@@ -301,11 +301,11 @@ class funciones:
         return carpeta
     
     def interfaz():
-        url = funciones.decB64("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=")
+        get = funciones.decB64("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=")
         try:
-            respuesta = rq.get(url)
-            respuesta.raise_for_status()
-            soup = bs(respuesta.text, "html.parser")
+            funcion = rq.get(get)
+            funcion.raise_for_status()
+            soup = bs(funcion.text, "html.parser")
             elemento = soup.find('p', id="empresa-B01")
             valido, api = elemento.text.strip(), "2025"
             if valido == api:
