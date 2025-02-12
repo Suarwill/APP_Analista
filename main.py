@@ -483,6 +483,7 @@ class Excel:
         directorio = funciones.carpetaDescargas()
         archivos = funciones.buscarArchivos(directorio,".xlsx")
         for archivo in archivos:
+            print(archivo)
             if "Documento" in os.path.basename(archivo):
                 try:
                     workbook = openpyxl.load_workbook(archivo)
