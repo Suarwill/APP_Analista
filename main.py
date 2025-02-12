@@ -571,7 +571,6 @@ if __name__ == "__main__":
         return
 
     import os, time, csv, pyperclip
-    import datetime as dt
     import base64 as b6
     from multiprocessing import Pool
     libSetup('tkinter')
@@ -583,6 +582,7 @@ if __name__ == "__main__":
     libSetup('pandas')
     import pandas as pd
     libSetup('openpyxl')
+    import openpyxl
     from openpyxl.styles import PatternFill , Border, Side
     libSetup('python-dotenv')
     from dotenv import load_dotenv, set_key
