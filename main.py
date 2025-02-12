@@ -88,12 +88,13 @@ class VentanaSphinx(Ventana):
 
     def verificarDevolucion(self):
         orden = self.ordenDato.get("1.0", tk.END).strip()
-        urlDevolucion = Excel.obtenerURLdevoluciones(orden)
+        Excel.obtenerURLdevoluciones(orden)
+        funciones.clear()
         web = paginaWeb(self.urlInv)
         web.login("login","password","btnSubmit")
-        print(pyperclip.paste())
         web.driver.get(pyperclip.paste())
         time.sleep(3)
+
         Excel.devolucion()
         
         web.quit()
@@ -558,7 +559,9 @@ class Excel:
                     print("Archivo creado")
                     os.remove(archivo)
                 except:
-                    print("No hay archivos Excel")
+                    print("No se pudo procesar archivo")
+            else:
+                print("No se encontraron archivos")
         return
 
 if __name__ == "__main__":
