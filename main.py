@@ -86,12 +86,14 @@ class VentanaSphinx(Ventana):
         self.destroy()
         return  print("Inventarios del dia cerrados.")
 
-    def verificarDevolucion(self,orden):
+    def verificarDevolucion(self):
         orden = self.ordenDato.get("1.0", tk.END).strip()
+        urlDevolucion = Excel.obtenerURLdevoluciones(orden)
         web = paginaWeb(self.urlInv)
         web.login("login","password","btnSubmit")
-        urlDevolucion = Excel.obtenerURLdevoluciones(orden)
-        self.urlDevolucion
+        print(pyperclip.paste())
+        web.driver.get(pyperclip.paste())
+        time.sleep(3)
         Excel.devolucion()
         
         web.quit()
@@ -472,7 +474,7 @@ class Excel:
     def obtenerURLdevoluciones(orden):
         url = "https://benny.sphinx.cl/Documento$reporteExcel.service?param={"
         parametros1 = '"obs":false,"fechaHasta":"2025-12-31","fechaDesde":"2024-01-01","idClasificacion":"10","obsProducto":"","fechaTipo":"D","promo":false,"maxRow":15,"maxPage":16,"transito":false,"pendiente":"P","detalle":true,'
-        parametros2 = f'"folio":"{numero}",'
+        parametros2 = f'"folio":"{orden}",'
         parametros3 = '"idTipo":"50","page":1,"idGrupo":null}'
         direccion = f'{url}{parametros1}{parametros2}{parametros3}' 
         return pyperclip.copy(direccion)
@@ -482,7 +484,7 @@ class Excel:
         archivos = os.listdir(directorio)
         listado = []
         for archivo in archivos:
-            if archivo.startswith("Documento") and archivo.endswith(".xlsx"):
+            if archivo.startswith("Documentos") and archivo.endswith(".xlsx"):
                 listado.append(os.path.join(directorio, archivo))
             else:
                 print("No se encontraron archivos con el prefijo y extensión especificados.")
@@ -559,8 +561,9 @@ class Excel:
                 workbook.save(os.path.join(directorio, newName + ".xlsx"))
                 print("Archivo creado")
                 os.remove(archivo)
-            else:
-                print("No hay archivos Excel")
+                
+        except:
+            print("No hay archivos Excel")
         return
 
 if __name__ == "__main__":
