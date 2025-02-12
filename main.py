@@ -67,8 +67,13 @@ class VentanaSphinx(Ventana):
         self.crearEtiqueta(" ", 3, 2)
         self.crearBoton("Cerrar Inventarios", self.cerrarINV, 4, 1, background="lightblue")
         self.crearEtiqueta(" ", 5, 2)
-        self.crearBoton("Cerrar", self.destroy, 5, 1, background="lightblue")
+        self.ordenDato = self.crearEntradaTexto(6, 1, 30, 1)
+        self.crearBoton("Verificar Devolución", self.verificarDevolucion, 7, 1, background="lightblue")
+        self.crearEtiqueta(" ", 8, 2)
+        self.crearBoton("Cerrar", self.destroy, 9, 1, background="lightblue")
+        self.crearEtiqueta(" ", 9, 2)
         self.expandirColumnas(3)
+        
         self.iniciar()
 
     def cerrarINV(self):
@@ -80,6 +85,17 @@ class VentanaSphinx(Ventana):
         web.quit()
         self.destroy()
         return  print("Inventarios del dia cerrados.")
+
+    def verificarDevolucion(self,orden):
+        orden = self.ordenDato.get("1.0", tk.END).strip()
+        web = paginaWeb(self.urlInv)
+        web.login("login","password","btnSubmit")
+        urlDevolucion = Excel.obtenerURLdevoluciones(orden)
+        self.urlDevolucion
+        Excel.devolucion()
+        
+        web.quit()
+        self.destroy()
     
     def extraerDiferencias(self):
         funciones.clear()
@@ -202,7 +218,7 @@ class paginaWeb:
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error al descargar informe {sucursal}: {e}")
             return time.sleep(1)
-  
+
     def quit(self):
         self.driver.quit()
 
@@ -415,7 +431,7 @@ class Excel:
         try: os.rename(archivos[0], os.path.join(directorio, ss[-1]))
         except OSError as error: print(f"Error al renombrar el archivo: {error}")
         funciones.clear()
-        return print("Proceso finalizado.")
+        return print("Proceso de Sobrestock finalizado.")
     
     def mermas():
         directorio = funciones.carpetaDescargas()
@@ -451,7 +467,101 @@ class Excel:
         try: os.rename(archivos[0], os.path.join(directorio, aaa[-1]))
         except OSError as error: print(f"Error al renombrar el archivo: {error}")
         funciones.clear()
-        return print("Proceso finalizado.")
+        return print("Proceso de Mermas finalizado.")
+
+    def obtenerURLdevoluciones(orden):
+        url = "https://benny.sphinx.cl/Documento$reporteExcel.service?param={"
+        parametros1 = '"obs":false,"fechaHasta":"2025-12-31","fechaDesde":"2024-01-01","idClasificacion":"10","obsProducto":"","fechaTipo":"D","promo":false,"maxRow":15,"maxPage":16,"transito":false,"pendiente":"P","detalle":true,'
+        parametros2 = f'"folio":"{numero}",'
+        parametros3 = '"idTipo":"50","page":1,"idGrupo":null}'
+        direccion = f'{url}{parametros1}{parametros2}{parametros3}' 
+        return pyperclip.copy(direccion)
+
+    def devolucion():
+        directorio = funciones.carpetaDescargas()
+        archivos = os.listdir(directorio)
+        listado = []
+        for archivo in archivos:
+            if archivo.startswith("Documento") and archivo.endswith(".xlsx"):
+                listado.append(os.path.join(directorio, archivo))
+            else:
+                print("No se encontraron archivos con el prefijo y extensión especificados.")
+        try:
+            for archivo in listado:
+                workbook = openpyxl.load_workbook(archivo)
+                hojaPrincipal = workbook.active
+                numeroOrden = str(hojaPrincipal['C7'].value).rstrip('.0')
+                nuevoPDV = hojaPrincipal['L7'].value
+
+                # Obtener el nuevo nombre del archivo desde las celdas C7 y A4
+                newName = f"{numeroOrden} {nuevoPDV}"
+
+                # Hojas
+                hojaSphinx = workbook['sphinx']
+                codigos = list({cell.value for row in hojaSphinx['AY7':'AY1000'] for cell in row if cell.value is not None})
+
+                # Colores
+                colorAmarillo = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+                colorVioleta = PatternFill(start_color="D0CEFF", end_color="D0CEFF", fill_type="solid")
+                colorVerde = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
+                # Bordes
+                bordeFino = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+                try:
+                    hojaVerificacion = workbook.create_sheet("Verificación")
+                    hojaVerificacion['A1'] = 'Cantidad en Guia:'
+                    hojaVerificacion['A1'].fill = colorAmarillo
+                    hojaVerificacion['B1'].value = '+SUMA(sphinx!AW:AW)'
+                    hojaVerificacion['B1'].border = bordeFino
+                    hojaVerificacion['A2'] = 'Cantidad pickeada:'
+                    hojaVerificacion['A2'].fill = colorAmarillo
+                    hojaVerificacion['B2'].value = '+SUMA(H:H)'
+                    hojaVerificacion['B2'].border = bordeFino
+                    
+                    hojaVerificacion['A4'] = 'Código'
+                    hojaVerificacion['A4'].fill = colorVioleta
+
+                    filaV = 5
+                    for codigo in codigos:
+                        celdaV = hojaVerificacion.cell(row=filaV, column=1)
+                        celdaV.value = codigo
+                        celdaV.fill = colorVerde
+                        celdaC = hojaVerificacion.cell(row=filaV, column=8)
+                        celdaC.border = bordeFino
+                        filaV += 1
+                    hojaVerificacion['B4'] = 'Envio de PDV'
+                    hojaVerificacion['B4'].fill = colorVioleta
+                    hojaVerificacion['B5'].value = '+SUMAR.SI.CONJUNTO(sphinx!AW:AW;sphinx!AY:AY;A5)'
+                    hojaVerificacion['C4'] = 'Recepcionado'
+                    hojaVerificacion['C4'].fill = colorVioleta
+                    hojaVerificacion['C5'].value = '+SUMAR.SI.CONJUNTO(I:I;H:H;A5)'
+                    hojaVerificacion['D4'] = 'Estado'
+                    hojaVerificacion['D4'].fill = colorVioleta
+                    hojaVerificacion['D5'].value = '+SI(B5=C5;"100%";SI(B5>C5;"Falta";SI(B5<C5;"Sobra";"")))'
+
+                    hojaVerificacion.column_dimensions['A'].width = 30
+                    hojaVerificacion.column_dimensions['H'].width = 30
+                except:
+                    print("No se pudo realizar la hoja de VERIFICACIONES")
+
+                try:
+                    # Creando la seccion conteo
+                    hojaVerificacion['H4'] = 'Código'
+                    hojaVerificacion['H4'].fill = colorVioleta
+                    hojaVerificacion['I4'] = 'Cantidad'
+                    hojaVerificacion['I4'].fill = colorVioleta
+                    hojaVerificacion['I5'].value = '+SI(H5=0;0;1)'
+                    hojaVerificacion['J4'] = 'Estado'
+                    hojaVerificacion['J4'].fill = colorVioleta
+                    hojaVerificacion['J5'].value = '+SI.ERROR(SI(BUSCARV(H5;A:A;1;0)=H5;"Está");"No se encuentra en Guia")'
+                except:
+                    print("No se pudo realizar la hoja de CONTEO")
+
+                workbook.save(os.path.join(directorio, newName + ".xlsx"))
+                print("Archivo creado")
+                os.remove(archivo)
+            else:
+                print("No hay archivos Excel")
+        return
 
 if __name__ == "__main__":
     import importlib as ilib
