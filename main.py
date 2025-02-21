@@ -513,7 +513,7 @@ class Excel:
                         hojaVerificacion['B1'].border = bordeFino
                         hojaVerificacion['A2'] = 'Cantidad pickeada:'
                         hojaVerificacion['A2'].fill = colorAmarillo
-                        hojaVerificacion['B2'].value = '+SUMA(H:H)'
+                        hojaVerificacion['B2'].value = '+SUMA(I:I)'
                         hojaVerificacion['B2'].border = bordeFino
                         
                         hojaVerificacion['A4'] = 'Código'
