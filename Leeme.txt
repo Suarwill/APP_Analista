@@ -1,0 +1,59 @@
+» Requisitos:
+	╔═══════════════════════════════════════════════╗
+	║S.O Windows y/o poder ejecutar archivos .exe	║
+	║Acceso a internet 				║
+	║Google Chrome	[Navegador]			║
+	╚═══════════════════════════════════════════════╝
+
+» Manual de Usuario:
+
+	■ Pantalla Inicial:
+╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Archivos Excel: 	Permite acceder a funciones relacionadas con la extracción de datos de archivos Excel.		║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║ Funciones en Sphinx: 	Permite acceder a funciones relacionadas con la extracción de datos de la plataforma Sphinx.	║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║ Configuración: 	Permite configurar las credenciales y la carpeta de descargas del sistema.			║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║ Cerrar: 		Cierra la aplicación.										║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+	■ Funciones en Excel
+╔═══════════════════════════════════════════════════════════════════════════════════════╗
+║Extraer Mermas: 	Extrae datos relacionados a mermas de archivos Excel guardados.	║
+╠═══════════════════════════════════════════════════════════════════════════════════════╣
+║Extraer Sobrestocks: 	Extrae datos relacionados de los archivos Excel guardados.	║
+╚═══════════════════════════════════════════════════════════════════════════════════════╝
+
+	■ Funciones en Sphinx
+╔═══════════════════════════════════════════════════════════════════════════════════════════════╗
+║Extraer Diferencias: 	Extrae reportes de diferencias de inventario de la plataforma Sphinx.	║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════╣
+║Unificar Archivos: 	Unifica los archivos de inventario descargados en un solo archivo Excel.║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════╣
+║Cerrar Inventarios: 	Cierra los inventarios del día en la plataforma Sphinx.			║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════╣
+║Verificar Devolución: 	Descarga el reporte de una devolución ingresando el Nro de orden	║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════╝
+
+	■ Configuración
+╔═══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║Usuario: 		Ingresa el nombre de usuario para acceder a la plataforma Sphinx.		║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Contraseña: 		Ingresa la contraseña para acceder a la plataforma Sphinx.			║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Carpeta de descargas: 	Ingresa la ruta de la carpeta donde se trabajaran los archivos descargados.	║
+╠═══════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║Guardar: 		Guarda la configuración ingresada.						║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+» Consideraciones:
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│Asegúrate de tener los archivos Excel necesarios en la carpeta de descargas antes de ejecutar las funciones de extracción de datos.	│
+│La conexión a internet es necesaria para acceder a la plataforma Sphinx y descargar los reportes.					│
+│Verifica que las credenciales ingresadas en la configuración sean correctas para acceder a la plataforma Sphinx.			│
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
