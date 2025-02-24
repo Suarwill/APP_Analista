@@ -587,7 +587,7 @@ if __name__ == "__main__":
     libSetup('openpyxl')
     import openpyxl
     from openpyxl.styles import PatternFill , Border, Side
-    libSetup('python-dotenv')
+    libSetup('dotenv')
     from dotenv import load_dotenv, set_key
     libSetup('requests')
     import requests as rq
