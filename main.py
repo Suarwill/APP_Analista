@@ -94,9 +94,7 @@ class VentanaSphinx(Ventana):
         web.login("login","password","btnSubmit")
         web.driver.get(pyperclip.paste())
         time.sleep(3)
-
         Excel.devolucion()
-        
         web.quit()
         self.destroy()
     
@@ -107,9 +105,10 @@ class VentanaSphinx(Ventana):
         web.login("login","password","btnSubmit")
         for sucursal,pdv in listado.items():
             web.reporteDiferencias(sucursal,pdv)
+        time.sleep(3)
+        print("Documentos extraidos")
         web.quit()
-        self.destroy()
-        return print("Documentos extraidos")
+        return self.destroy()
 
 class VentanaConfigurar(Ventana):
     def __init__(self, ventana_padre):
