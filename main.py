@@ -204,7 +204,7 @@ class paginaWeb:
             select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "Sphinx_Sucursales")))
             select = Select(select_element)
             select.select_by_value(str(sucursal))
-            time.sleep(1)
+            time.sleep(2)
 
             select_element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "inventario_tipo")))
             select = Select(select_element)
@@ -212,7 +212,7 @@ class paginaWeb:
 
             botonEjecutar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnEjecuta")))
             botonEjecutar.click()
-            time.sleep(1)
+            time.sleep(2)
 
             botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
             botonExcel.click()
