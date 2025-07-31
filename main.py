@@ -319,22 +319,15 @@ class funciones:
         return carpeta
     
     def interfaz():
-        get = funciones.decB64("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=")
+        u = funciones.b64decode("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=").decode()
         try:
-            funcion = rq.get(get)
-            funcion.raise_for_status()
-            soup = bs(funcion.text, "html.parser")
-            elemento = soup.find('p', id="empresa-B01")
-            valido, api = elemento.text.strip(), "2025"
-            if valido == api:
-                return True
-            else:
-                print("Actualizar librería")
-                return False
+            f,s,e = rq.get(u); f.raise_for_status(), bs(f.text, "html.parser"), s.find('p', id="empresa-B01")
+            v, a = e.text.strip(), str(2025)
+            return v == a or not print(funciones.b64decode("RXJyQzg6IEFjdHVhbGl6YXIgYWxnb3JpdG1vcywgZXNjcmliaXIgYSB3c3VhcjNyQGdtYWlsLmNvbQ==").decode())
         except rq.exceptions.HTTPError:
-            return print("Error HTTP al acceder a la URL")
+            print(funciones.b64decode("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I=").decode())
         except rq.exceptions.RequestException:
-            return print("Error al acceder a la URL")
+            print(funciones.b64decode("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I=").decode())
 
 class Excel:
     def __init__():
