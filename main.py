@@ -225,34 +225,33 @@ class paginaWeb:
         self.driver.quit()
 
 class funciones:
-    def __init__(self):
-        pass
-
-    def decB64(texto):
-        return b6.b64decode(texto).decode('utf-8')
     
+    @staticmethod
+    def decB64(texto):
+        return b64.b64decode(texto).decode('utf-8')
+
+    @staticmethod
     def codec(w, cif=True):
-        x , i = "" , 1
+        x, i = "", 1
         for c in w:
             y = ord(c)
-            if cif : nV = (y+i)%256
-            else: nV = (y-i)%256
+            nV = (y + i) % 256 if cif else (y - i) % 256
             i += 1
-            nV = max(0, min(nV, 0x10FFFF))
-            nC = chr(nV)
-            x += nC
+            x += chr(max(0, min(nV, 0x10FFFF)))
         return x
-    
-    def buscarArchivos(directorio,tipoArchivo):
+
+    @staticmethod
+    def buscarArchivos(directorio, tipoArchivo):
         lista = []
         archivos = os.listdir(directorio)
         for archivo in archivos:
             if archivo.endswith(tipoArchivo):
                 lista.append(os.path.join(directorio, archivo))
-            else:
-                print("No se encontraron archivos")
+        if not lista:
+            print("No se encontraron archivos")
         return lista
 
+    @staticmethod
     def borrarArchivos(directorio, listaDeArchivos):
         warnings.filterwarnings("ignore", category=UserWarning)
         for x in listaDeArchivos:
@@ -266,8 +265,9 @@ class funciones:
                 print(f"No tienes permisos suficientes para eliminar {x}.")
             except OSError as error:
                 print(f"Ocurrió un error al eliminar el archivo {x}: {error}")
-        return print("Archivos eliminados.")
+        print("Archivos eliminados.")
 
+    @staticmethod
     def ejecutarAsincrono(file):
         try:
             with Pool(processes=1) as pool:
@@ -276,58 +276,63 @@ class funciones:
         except FileNotFoundError:
             messagebox.showerror("Error", "No se encontró el archivo raíz")
 
+    @staticmethod
     def leerCSV(documento):
         busqueda = os.path.join(os.getcwd(), documento)
-        listado = {}
         with open(busqueda, 'r', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             listado = {row[0]: row[1] for row in reader}
         return listado
 
+    @staticmethod
     def clear():
-        if os.name == 'nt':   os.system('cls')
-        else:                 os.system('clear')
-        return None
+        os.system('cls' if os.name == 'nt' else 'clear')
 
+    @staticmethod
     def creacionEntorno():
         try:
             if not os.path.exists(".env"):
                 with open(".env", "w") as env_file:
                     chrome = "%APPDATA%/Google/Chrome"
-                    env_file.write("USERNAME=\n")
-                    env_file.write("PASSWORD=\n")
-                    env_file.write("CARPETA=\n")
+                    env_file.write("USERNAME=\nPASSWORD=\nCARPETA=\n")
                     env_file.write(f"PERFIL_CHROME={chrome}")
-                    env_file.close()
-                return print("Archivo env. creado!")
-        except: 
+                print("Archivo env. creado!")
+        except:
             print("Archivo env. ya existe!")
+
         try:
             if not os.path.exists("Sucursales.csv"):
                 with open("Sucursales.csv", "w", newline="") as csv_file:
                     writer = csv.writer(csv_file)
-                    writer.writerow(["ID_sucursal,Nombre_sucursal"])
-                    csv_file.close()
-                return print("Sucursales.csv creado!")
-        except: 
+                    writer.writerow(["ID_sucursal", "Nombre_sucursal"])
+                print("Sucursales.csv creado!")
+        except:
             print("Sucursales.csv ya existe!")
-        return ("Continuando...")
 
+        return "Continuando..."
+
+    @staticmethod
     def carpetaDescargas():
         load_dotenv(override=True)
-        carpeta = os.environ.get("CARPETA")
-        return carpeta
-    
+        return os.environ.get("CARPETA")
+
+    @staticmethod
     def interfaz():
-        u = funciones.b64decode("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=").decode()
+        u = funciones.decB64("aHR0cHM6Ly9zdWFyd2lsbC5naXRodWIuaW8=")
         try:
-            f,s,e = rq.get(u); f.raise_for_status(), bs(f.text, "html.parser"), s.find('p', id="empresa-B01")
-            v, a = e.text.strip(), str(2025)
-            return v == a or not print(funciones.b64decode("RXJyQzg6IEFjdHVhbGl6YXIgYWxnb3JpdG1vcywgZXNjcmliaXIgYSB3c3VhcjNyQGdtYWlsLmNvbQ==").decode())
+            f = rq.get(u)
+            f.raise_for_status()
+            s = bs(f.text, "html.parser")
+            e = s.find('p', id="empresa-B01")
+            v, a = e.text.strip(), "2025"
+            return v == a or not print(funciones.decB64(
+                "RXJyQzg6IEFjdHVhbGl6YXIgYWxnb3JpdG1vcywgZXNjcmliaXIgYSB3c3VhcjNyQGdtYWlsLmNvbQ=="
+            ))
         except rq.exceptions.HTTPError:
-            print(funciones.b64decode("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I=").decode())
+            print(funciones.decB64("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I="))
         except rq.exceptions.RequestException:
-            print(funciones.b64decode("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I=").decode())
+            print(funciones.decB64("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I="))
+
 
 class Excel:
     def __init__():
@@ -557,35 +562,40 @@ class Excel:
         return
 
 if __name__ == "__main__":
-    import importlib as ilib
-    import subprocess as sub
-    def libSetup(lib):
-        # Funcion para instalar automaticamente librerias no existentes
-        try:ilib.import_module(lib)
-        except ImportError:sub.check_call(['pip', 'install', lib])
-        return
+    import importlib, subprocess, sys, platform
+
+    def libSetup(*libs):
+        for entry in libs:
+            # Si viene como tupla: (modulo_python, paquete_apt)
+            if isinstance(entry, tuple):
+                lib, apt_pkg = entry
+            else:
+                lib, apt_pkg = entry, None
+            try:
+                importlib.import_module(lib)
+            except ImportError:
+                if platform.system() == 'Linux':
+                    print(f"[+] Instalando {lib} con APT...")
+                    pkg = apt_pkg or lib
+                    subprocess.check_call(['sudo', 'apt', 'install', '-y', pkg])
+                else:
+                    print(f"[+] Instalando {lib} con pip...")
+                    subprocess.check_call([sys.executable, '-m', 'pip', 'install', lib])
 
     import os, time, csv, pyperclip
-    import base64 as b6
+    import base64 as b64
     from multiprocessing import Pool
-    libSetup('tkinter')
+    libSetup('tkinter','warnings','pyperclip','pandas','openpyxl','dotenv','requests','bs4','selenium')
     import tkinter as tk
     from tkinter import Tk, Button, Label, Text
     from tkinter import messagebox
-    libSetup('warnings')
     import warnings
-    libSetup('pandas')
     import pandas as pd
-    libSetup('openpyxl')
     import openpyxl
     from openpyxl.styles import PatternFill , Border, Side
-    libSetup('dotenv')
     from dotenv import load_dotenv, set_key
-    libSetup('requests')
     import requests as rq
-    libSetup('bs4')
     from bs4 import BeautifulSoup as bs
-    libSetup('selenium')
     from selenium import webdriver
     from selenium.webdriver.common.by import By
     from selenium.webdriver.chrome.options import Options
