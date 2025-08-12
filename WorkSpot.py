@@ -312,7 +312,7 @@ class funciones:
     def ejecutarAsincrono(file):
         try:
             with Pool(processes=1) as pool:
-                pool.apply_async(sub.run, ["python", file])
+                pool.apply_async(subprocess.run, ["python", file])
             messagebox.showinfo("Función ejecutada.")
         except FileNotFoundError:
             messagebox.showerror("Error", "No se encontró el archivo raíz")
