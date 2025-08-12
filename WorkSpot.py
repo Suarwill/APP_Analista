@@ -1,3 +1,44 @@
+import importlib, subprocess, sys, platform
+
+def libSetup(*libs):
+    for entry in libs:
+        # Si viene como tupla: (modulo_python, paquete_apt)
+        if isinstance(entry, tuple):
+            lib, apt_pkg = entry
+        else:
+            lib, apt_pkg = entry, None
+        try:
+            importlib.import_module(lib)
+        except ImportError:
+            if platform.system() == 'Linux':
+                print(f"[+] Instalando {lib} con APT...")
+                pkg = apt_pkg or lib
+                subprocess.check_call(['sudo', 'apt', 'install', '-y', pkg])
+            else:
+                print(f"[+] Instalando {lib} con pip...")
+                subprocess.check_call([sys.executable, '-m', 'pip', 'install', lib])
+
+import os, time, csv
+import base64 as b64
+from multiprocessing import Pool
+libSetup('tkinter','warnings','pyperclip','pandas','openpyxl','dotenv','requests','bs4','selenium')
+import tkinter as tk
+from tkinter import Tk, Button, Label, Text
+from tkinter import messagebox
+import warnings
+import pandas as pd
+import openpyxl, pyperclip
+from openpyxl.styles import PatternFill , Border, Side
+from dotenv import load_dotenv, set_key
+import requests as rq
+from bs4 import BeautifulSoup as bs
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+
 class Ventana:
     def __init__(self, titulo, width, height,posicion):
         self.ventana = Tk()
@@ -89,7 +130,7 @@ class VentanaSphinx(Ventana):
     def verificarDevolucion(self):
         orden = self.ordenDato.get("1.0", tk.END).strip()
         Excel.obtenerURLdevoluciones(orden)
-        funciones.clear()
+        funciones.clear("...",1)
         web = paginaWeb(self.urlInv)
         web.login("login","password","btnSubmit")
         web.driver.get(pyperclip.paste())
@@ -99,7 +140,7 @@ class VentanaSphinx(Ventana):
         self.destroy()
     
     def extraerDiferencias(self):
-        funciones.clear()
+        funciones.clear("...",1)
         web = paginaWeb(self.urlDif)
         listado = funciones.leerCSV("Sucursales.csv")
         web.login("login","password","btnSubmit")
@@ -285,8 +326,12 @@ class funciones:
         return listado
 
     @staticmethod
-    def clear():
+    def clear(texto,valor_time):
         os.system('cls' if os.name == 'nt' else 'clear')
+        print(texto)
+        time.sleep(int(valor_time))
+        return
+
 
     @staticmethod
     def creacionEntorno():
@@ -330,17 +375,16 @@ class funciones:
             ))
         except rq.exceptions.HTTPError:
             print(funciones.decB64("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I="))
+            print("Hubo error al crear el entorno, contactar al correo wsuar3z@gmail.com")
         except rq.exceptions.RequestException:
             print(funciones.decB64("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I="))
-
+            print("Hubo error al crear el entorno, contactar al correo wsuar3z@gmail.com")
 
 class Excel:
     def __init__():
         pass
 
     def renombrarArchivos():
-        """Renombra archivos Excel "Inventario" usando la sucursal de la hoja 'sphinx'."""
-
         dir_descargas = funciones.carpetaDescargas()  # Obtén el directorio de descargas
         columna, hoja, sep = 0, 'sphinx', '/'
         archivos_excel = funciones.buscarArchivos(dir_descargas, ".xlsx")  # Busca archivos .xlsx
@@ -368,9 +412,8 @@ class Excel:
                 print(f"Archivo {archivo} no contiene 'Inventario' en el nombre. Omitido.")
 
 
-        funciones.clear()
-        print("Renombrado finalizado.")  # Imprime el mensaje directamente
-        return  time.sleep(1)
+        funciones.clear("Renombrado finalizado.",1)
+        return  
 
 
     def unificar():
@@ -393,8 +436,8 @@ class Excel:
                 print(f"Error al procesar el archivo {x}: {e}")
         nuevo_archivo = os.path.join(dir, "unificados.xlsx")
         df_final.to_excel(nuevo_archivo, index=False)
-        funciones.clear()
-        return print("Unificación realizada.")
+        funciones.clear("Unificación realizada.",1)
+        return
 
     def sobrestock():
         directorio = funciones.carpetaDescargas()
@@ -430,8 +473,8 @@ class Excel:
                     print(f"Hoja vacia {hoja}")
         try: os.rename(archivos[0], os.path.join(directorio, ss[-1]))
         except OSError as error: print(f"Error al renombrar el archivo: {error}")
-        funciones.clear()
-        return print("Proceso de Sobrestock finalizado.")
+        funciones.clear("Proceso de Sobrestock finalizado.",1)
+        return
     
     def mermas():
         directorio = funciones.carpetaDescargas()
@@ -466,8 +509,8 @@ class Excel:
 
         try: os.rename(archivos[0], os.path.join(directorio, aaa[-1]))
         except OSError as error: print(f"Error al renombrar el archivo: {error}")
-        funciones.clear()
-        return print("Proceso de Mermas finalizado.")
+        funciones.clear("Proceso de Mermas finalizado.",1)
+        return
 
     def obtenerURLdevoluciones(orden):
         url = "https://benny.sphinx.cl/Documento$reporteExcel.service?param={"
@@ -558,51 +601,15 @@ class Excel:
                 except:
                     print("No se pudo procesar archivo")
             else:
-                print("No se encontraron archivos")
+                funciones.clear("No se encontraron archivos de devoluciones.",1)
         return
 
 if __name__ == "__main__":
-    import importlib, subprocess, sys, platform
-
-    def libSetup(*libs):
-        for entry in libs:
-            # Si viene como tupla: (modulo_python, paquete_apt)
-            if isinstance(entry, tuple):
-                lib, apt_pkg = entry
-            else:
-                lib, apt_pkg = entry, None
-            try:
-                importlib.import_module(lib)
-            except ImportError:
-                if platform.system() == 'Linux':
-                    print(f"[+] Instalando {lib} con APT...")
-                    pkg = apt_pkg or lib
-                    subprocess.check_call(['sudo', 'apt', 'install', '-y', pkg])
-                else:
-                    print(f"[+] Instalando {lib} con pip...")
-                    subprocess.check_call([sys.executable, '-m', 'pip', 'install', lib])
-
-    import os, time, csv, pyperclip
-    import base64 as b64
-    from multiprocessing import Pool
-    libSetup('tkinter','warnings','pyperclip','pandas','openpyxl','dotenv','requests','bs4','selenium')
-    import tkinter as tk
-    from tkinter import Tk, Button, Label, Text
-    from tkinter import messagebox
-    import warnings
-    import pandas as pd
-    import openpyxl
-    from openpyxl.styles import PatternFill , Border, Side
-    from dotenv import load_dotenv, set_key
-    import requests as rq
-    from bs4 import BeautifulSoup as bs
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.support.ui import WebDriverWait, Select
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.common.exceptions import TimeoutException, NoSuchElementException
-
+    # Iniciar la aplicación
     ventanaPrincipal = VentanaPrincipal()
+
+    # Crear el entorno si no existe
     funciones.creacionEntorno()
+
+    # Iniciar la ventana principal
     ventanaPrincipal.iniciar()
