@@ -375,10 +375,10 @@ class funciones:
             ))
         except rq.exceptions.HTTPError:
             print(funciones.decB64("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I="))
-            print("Hubo error al crear el entorno, contactar al correo wsuar3z@gmail.com")
+            input("Err:3525k8, contactar al correo wsuar3z@gmail.com \nPresiona Enter para salir...")
         except rq.exceptions.RequestException:
             print(funciones.decB64("YWggbm8gaGF5IGNvbmV4acOzbiBjb24gZWwgc2Vydmlkb3I="))
-            print("Hubo error al crear el entorno, contactar al correo wsuar3z@gmail.com")
+            input("Err:3525k8, contactar al correo wsuar3z@gmail.com \nPresiona Enter para salir...")
 
 class Excel:
     def __init__():
