@@ -444,7 +444,7 @@ class Excel:
         directorio = funciones.carpetaDescargas()
         archivos = funciones.buscarArchivos(directorio,".xlsx")
         ss = ["AAA SS NUEVOS.csv", "AAA SS VIGENTES.csv", "AAA SS ANTIGUOS.csv", "AAA ELIMINADOS.csv", "PROCESADO SS.xlsx"]
-        hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "AAA ELIMINADOS.csv"]
+        hojas = ["SOBRESTOCK - NUEVO" , "SOBRESTOCK VIGENTE ", "SOBRESTOCK ANTIGUO", "ESTATUS ELIMINADO"]
         funciones.borrarArchivos(directorio, ss)
 
         for archivo in archivos:
