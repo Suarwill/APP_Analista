@@ -254,11 +254,13 @@ class paginaWeb:
 
             botonEjecutar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnEjecuta")))
             botonEjecutar.click()
-            time.sleep(wait_time)
+            return time.sleep(2)
 
             botonExcel = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "btnExcel")))
             botonExcel.click()
             print(pdv)
+            time.sleep(wait_time)
+            
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error al descargar informe {sucursal}: {e}")
             return time.sleep(1)
